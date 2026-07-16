@@ -37,7 +37,6 @@ export default function BlogPage() {
             className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-400 transition-colors"
             title="RSS feed"
           >
-            <span aria-hidden>📡</span>
             Subscribe via RSS
           </a>
         </div>

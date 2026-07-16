@@ -81,6 +81,12 @@ export default function RootLayout({
         />
         <link rel="canonical" href="https://david-portfolio.vercel.app" />
         <link rel="manifest" href="/manifest.json" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="David's Blog RSS"
+          href="https://david-portfolio.vercel.app/feed"
+        />
         <meta name="theme-color" content="#070f1c" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -118,6 +124,7 @@ export default function RootLayout({
                 "Tailwind CSS",
                 "AI Integration",
                 "n8n Workflow Automation",
+                "Zapier Automation",
                 "SaaS MVP Development",
               ],
             }),

@@ -349,16 +349,16 @@ Add React Error Boundary to gracefully handle errors.
 
 ## ✅ Phase 8 Checklist
 
-- [ ] Add contact form success animation
-- [ ] Add keyboard shortcuts
-- [ ] Add project search functionality
-- [ ] Add internationalization (i18n)
-- [ ] Add RSS feed for blog
-- [ ] Add "Hire Me" CTA banner
-- [ ] Add loading skeletons
-- [ ] Add print stylesheet
-- [ ] Add PWA support
-- [ ] Add error boundary
+- [x] Add contact form success animation
+- [x] Add keyboard shortcuts (+ help modal via `?`, Ctrl/Cmd+K search)
+- [x] Add project search functionality
+- [x] Add internationalization (i18n) — LocaleContext + messages; language switcher hidden until full translations
+- [x] Add RSS feed for blog (`/feed` + `/feed.xml` alias)
+- [x] Add "Hire Me" CTA banner
+- [x] Add loading skeletons
+- [x] Add print stylesheet
+- [x] Add PWA support
+- [x] Add error boundary
 
 ---
 
