@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { blogPosts } from '@/lib/blog';
-import BlogCard from '@/components/BlogCard';
+import BlogList from '@/components/BlogList';
 
 export const metadata: Metadata = {
   title: 'Blog | David — Full-Stack & AI Web Developer',
   description:
-    'Technical articles, tutorials, and thoughts on Next.js, Supabase, SaaS, and web development.',
+    'Technical articles, tutorials, and thoughts on Next.js, Supabase, SaaS, automation, and web development.',
   openGraph: {
     title: 'Blog | David — Full-Stack & AI Web Developer',
     description:
-      'Technical articles, tutorials, and thoughts on Next.js, Supabase, SaaS, and web development.',
+      'Technical articles, tutorials, and thoughts on Next.js, Supabase, SaaS, automation, and web development.',
     url: 'https://david-portfolio.vercel.app/blog',
+    images: [{ url: '/images/og-image.png', width: 1200, height: 630 }],
   },
 };
 
@@ -26,11 +27,10 @@ export default function BlogPage() {
           >
             ← Back to home
           </Link>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Blog
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
           <p className="text-lg text-gray-400 max-w-2xl mb-4">
-            Technical articles, tutorials, and thoughts on web development, Next.js, Supabase, and building SaaS products.
+            Technical articles, tutorials, and thoughts on web development, Next.js, Supabase,
+            automation, and building SaaS products.
           </p>
           <a
             href="/feed"
@@ -42,17 +42,7 @@ export default function BlogPage() {
           </a>
         </div>
 
-        <div className="grid gap-6 md:gap-8">
-          {blogPosts.map((post, index) => (
-            <BlogCard key={post.slug} post={post} index={index} />
-          ))}
-        </div>
-
-        {blogPosts.length === 0 && (
-          <p className="text-gray-400 text-center py-12">
-            No posts yet. Check back soon.
-          </p>
-        )}
+        <BlogList posts={blogPosts} />
       </div>
     </main>
   );

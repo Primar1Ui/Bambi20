@@ -74,6 +74,42 @@ A portfolio is often the first impression for recruiters and clients. Fast load 
 *More posts coming soon.*
     `.trim(),
   },
+  {
+    slug: 'n8n-automation-for-leads-and-content',
+    title: 'n8n Automation for Leads, Content, and Ops',
+    description:
+      'How I design practical n8n workflows that connect APIs, AI models, Google Sheets, and Gmail for lead qualification and content operations.',
+    date: '2026-07-16',
+    author: 'David',
+    tags: ['n8n', 'Automation', 'AI'],
+    featured: true,
+    content: `
+## Why Automation Matters
+
+Manual lead follow-up and repetitive content ops slow teams down. With **n8n**, you can connect APIs, AI models, spreadsheets, and email into reliable workflows that run on demand or on a schedule.
+
+## Three Workflow Patterns I Use
+
+1. **API ingestion** — Trigger a flow, fetch external data, reshape fields, and hand results to the next step.
+2. **Content operations** — Schedule pipeline runs that prepare content, update Google Sheets, and send notifications.
+3. **AI lead qualification** — Branch on conditions, score leads with an LLM (for example Groq), log outcomes, and alert via Gmail.
+
+## Implementation Tips
+
+- Keep each node focused on one job: fetch, transform, decide, or notify.
+- Use clear branch labels so true/false paths stay maintainable.
+- Log every important outcome to Sheets or a database before sending emails.
+- Start with a manual trigger, then promote proven flows to a schedule.
+
+## Key Takeaways
+
+- Automation is most valuable when it removes busywork without hiding failures.
+- AI belongs in the middle of the workflow — after clean inputs, before durable storage and alerts.
+- Ship small, observable flows first, then expand.
+
+*Want a similar system for your team? Reach out via the contact form.*
+    `.trim(),
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
@@ -82,4 +118,8 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
 
 export function getFeaturedPosts(): BlogPost[] {
   return blogPosts.filter((p) => p.featured);
+}
+
+export function getAllBlogTags(): string[] {
+  return Array.from(new Set(blogPosts.flatMap((p) => p.tags))).sort();
 }

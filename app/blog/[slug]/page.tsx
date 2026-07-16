@@ -22,6 +22,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: post.title,
       description: post.description,
       url: `https://david-portfolio.vercel.app/blog/${post.slug}`,
+      type: 'article',
+      publishedTime: post.date,
+      authors: [post.author],
+      tags: post.tags,
+      images: [{ url: '/images/og-image.png', width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+      images: ['/images/og-image.png'],
     },
   };
 }
@@ -107,6 +118,27 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: post.title,
+            description: post.description,
+            datePublished: post.date,
+            author: {
+              '@type': 'Person',
+              name: post.author,
+              url: 'https://david-portfolio.vercel.app',
+            },
+            mainEntityOfPage: `https://david-portfolio.vercel.app/blog/${post.slug}`,
+            image: 'https://david-portfolio.vercel.app/images/og-image.png',
+            keywords: post.tags.join(', '),
+          }),
+        }}
+      />
       <article className="max-w-3xl mx-auto">
         <Link
           href="/blog"

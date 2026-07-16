@@ -17,10 +17,10 @@ export default function BlogCard({ post, index = 0 }: BlogCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.4 }}
-      className="group p-6 rounded-2xl bg-gray-900/50 dark:bg-gray-900/50 light:bg-white/80 border border-gray-800 dark:border-gray-800 light:border-gray-200 hover:border-blue-500/50 transition-all duration-300"
+      className="group p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/50 transition-all duration-300"
     >
       <Link href={`/blog/${post.slug}`} className="block">
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500 light:text-gray-600 mb-2">
+        <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
           <Calendar className="w-4 h-4" />
           <time dateTime={post.date}>{post.date}</time>
           {post.featured && (
@@ -29,10 +29,10 @@ export default function BlogCard({ post, index = 0 }: BlogCardProps) {
             </span>
           )}
         </div>
-        <h3 className="text-xl font-semibold text-white dark:text-white light:text-gray-900 mb-2 group-hover:text-blue-400 transition-colors">
+        <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
           {post.title}
         </h3>
-        <p className="text-gray-400 dark:text-gray-400 light:text-gray-600 leading-relaxed mb-4 line-clamp-2">
+        <p className="text-gray-400 leading-relaxed mb-4 line-clamp-2">
           {post.description}
         </p>
         <div className="flex flex-wrap gap-2 mb-4">

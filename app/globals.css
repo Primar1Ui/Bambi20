@@ -2,25 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Deep navy dark theme — primary portfolio look.
+ * "light" is a slightly elevated navy variant (never white).
+ */
 :root,
 .dark {
-  --background: #0B0F19;
-  --foreground: #FFFFFF;
-  --surface: rgba(17, 24, 39, 0.5);
-  --surface-solid: #1f2937;
-  --border: #1f2937;
-  --muted: #9ca3af;
-  --muted-strong: #d1d5db;
+  --background: #070f1c;
+  --foreground: #e8eef8;
+  --surface: rgba(15, 28, 52, 0.72);
+  --surface-solid: #122038;
+  --border: #1e3355;
+  --muted: #93a4c3;
+  --muted-strong: #c5d0e6;
+  --accent: #3b82f6;
+  --page-glow: rgba(37, 99, 235, 0.14);
 }
 
 .light {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --surface: rgba(255, 255, 255, 0.9);
-  --surface-solid: #ffffff;
-  --border: #e2e8f0;
-  --muted: #64748b;
-  --muted-strong: #475569;
+  --background: #0b1628;
+  --foreground: #eef3fb;
+  --surface: rgba(22, 38, 68, 0.85);
+  --surface-solid: #163054;
+  --border: #27406a;
+  --muted: #a8b7d4;
+  --muted-strong: #d5deef;
+  --accent: #60a5fa;
+  --page-glow: rgba(59, 130, 246, 0.18);
 }
 
 * {
@@ -31,11 +39,17 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--background);
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 90% 55% at 15% -10%, var(--page-glow), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 90% 0%, rgba(99, 102, 241, 0.12), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(14, 116, 144, 0.08), transparent 55%);
+  background-attachment: fixed;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -50,23 +64,17 @@ body {
   }
 }
 
-/* Accessibility: Focus styles for keyboard navigation */
 *:focus-visible {
   outline: 2px solid #60a5fa;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-.light *:focus-visible {
-  outline-color: #2563eb;
-}
-
-/* Skip to content link (hidden until focused) */
 .skip-to-content {
   position: absolute;
   top: -40px;
   left: 0;
-  background: #3b82f6;
+  background: #2563eb;
   color: white;
   padding: 8px 16px;
   text-decoration: none;
@@ -79,7 +87,6 @@ body {
   top: 0;
 }
 
-/* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -91,7 +98,6 @@ body {
   }
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -101,97 +107,90 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1a1f2e;
+  background: #1a2d4d;
   border-radius: 5px;
 }
 
-.light ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-}
-
-.light ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a2f3e;
+  background: #27406a;
 }
 
-/* Navbar surfaces */
 .navbar-bg {
-  background-color: rgba(11, 15, 25, 0.95);
+  background-color: rgba(7, 15, 28, 0.92);
+  border-color: rgba(30, 51, 85, 0.7);
 }
+
 .light .navbar-bg {
-  background-color: rgba(248, 250, 252, 0.98);
-  border-color: rgba(226, 232, 240, 0.8);
+  background-color: rgba(11, 22, 40, 0.94);
+  border-color: rgba(39, 64, 106, 0.8);
 }
 
 /*
- * Light mode remaps for dark-first Tailwind utilities used across sections.
- * Accent / CTA surfaces keep white text via the exceptions below.
+ * Elevated navy surfaces for the "light" (brighter navy) variant.
+ * Keeps contrast readable without ever using white page chrome.
  */
 .light .text-white {
-  color: #0f172a;
+  color: #eef3fb;
 }
 .light .text-gray-300 {
-  color: #475569;
+  color: #c5d0e6;
 }
 .light .text-gray-400 {
-  color: #64748b;
+  color: #93a4c3;
 }
 .light .hover\:text-white:hover {
-  color: #0f172a;
+  color: #ffffff;
 }
 .light .hover\:text-gray-300:hover {
-  color: #334155;
+  color: #e8eef8;
 }
 
 .light .bg-gray-900\/50,
 .light .bg-gray-900\/80 {
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(18, 32, 56, 0.85);
 }
 .light .bg-gray-800,
 .light .bg-gray-800\/50,
 .light .bg-gray-800\/80 {
-  background-color: #f1f5f9;
+  background-color: #163054;
 }
-.light .bg-\[\#0B0F19\]\/98 {
-  background-color: rgba(248, 250, 252, 0.98);
+.light .bg-\[\#0B0F19\]\/98,
+.light .bg-slate-50\/98 {
+  background-color: rgba(11, 22, 40, 0.98);
 }
 .light .hover\:bg-gray-700:hover,
 .light .hover\:bg-gray-800:hover {
-  background-color: #e2e8f0;
+  background-color: #1c3a5f;
 }
 .light .hover\:bg-gray-100:hover {
-  background-color: #f1f5f9;
+  background-color: #1a3358;
 }
 
 .light .border-gray-800,
-.light .border-gray-800\/50 {
-  border-color: #e2e8f0;
+.light .border-gray-800\/50,
+.light .border-gray-200 {
+  border-color: #27406a;
 }
-.light .border-gray-700 {
-  border-color: #cbd5e1;
+.light .border-gray-700,
+.light .border-gray-300 {
+  border-color: #355685;
 }
 .light .border-t.border-gray-800,
 .light .border-y.border-gray-800\/50 {
-  border-color: #e2e8f0;
+  border-color: #27406a;
 }
 .light .hover\:border-gray-600:hover {
-  border-color: #94a3b8;
+  border-color: #3b82f6;
 }
 
 .light .ring-offset-\[\#0B0F19\],
-.light .focus-visible\:ring-offset-\[\#0B0F19\]:focus-visible {
-  --tw-ring-offset-color: #f8fafc;
-}
+.light .focus-visible\:ring-offset-\[\#0B0F19\]:focus-visible,
 .light .ring-offset-background,
 .light .focus-visible\:ring-offset-background:focus-visible,
 .light .focus\:ring-offset-background:focus {
-  --tw-ring-offset-color: #f8fafc;
+  --tw-ring-offset-color: #0b1628;
 }
 
-/* Keep white text on accent CTAs / banners / badges */
 .light .bg-blue-500,
 .light .bg-blue-600,
 .light .bg-green-500,
@@ -212,22 +211,46 @@ body {
   color: #fff;
 }
 
-/* Soft secondary buttons in light mode (e.g. Download CV) */
 .light a.bg-gray-800.text-white,
 .light button.bg-gray-800.text-white {
-  color: #0f172a;
-  background-color: #fff;
-  border-color: #cbd5e1;
+  color: #eef3fb;
+  background-color: #163054;
+  border-color: #355685;
 }
 .light a.bg-gray-800.text-white:hover,
 .light button.bg-gray-800.text-white:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
+  background-color: #1c3a5f;
+  border-color: #3b82f6;
 }
 
-/* Form inputs stay readable */
 .light input.text-white,
 .light textarea.text-white,
 .light select.text-white {
-  color: #0f172a;
+  color: #eef3fb;
+}
+
+/* Dark-mode card/surfaces: slightly richer navy than pure gray-900 */
+.dark .bg-gray-900\/50,
+:root .bg-gray-900\/50 {
+  background-color: rgba(15, 28, 52, 0.72);
+}
+.dark .bg-gray-900\/80,
+:root .bg-gray-900\/80 {
+  background-color: rgba(15, 28, 52, 0.88);
+}
+.dark .border-gray-800,
+:root .border-gray-800 {
+  border-color: #1e3355;
+}
+.dark .border-gray-800\/50,
+:root .border-gray-800\/50 {
+  border-color: rgba(30, 51, 85, 0.7);
+}
+.dark .bg-gray-800,
+:root .bg-gray-800 {
+  background-color: #122038;
+}
+.dark .bg-gray-800\/50,
+:root .bg-gray-800\/50 {
+  background-color: rgba(18, 32, 56, 0.7);
 }

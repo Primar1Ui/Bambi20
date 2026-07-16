@@ -11,14 +11,17 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const DEEP_BLUE_DARK = '#070f1c';
+const DEEP_BLUE_ELEVATED = '#0b1628';
+
 function getPreferredTheme(): Theme {
   if (typeof window === 'undefined') return 'dark';
   try {
     const stored = localStorage.getItem('theme');
+    // Always prefer deep navy dark unless the user explicitly chose elevated navy ("light")
     if (stored === 'light' || stored === 'dark') return stored;
-    if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
   } catch {
-    // ignore storage / matchMedia errors
+    // ignore storage errors
   }
   return 'dark';
 }
@@ -29,7 +32,7 @@ function applyTheme(theme: Theme) {
   document.documentElement.classList.add(theme);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    meta.setAttribute('content', theme === 'light' ? '#f8fafc' : '#0B0F19');
+    meta.setAttribute('content', theme === 'light' ? DEEP_BLUE_ELEVATED : DEEP_BLUE_DARK);
   }
 }
 

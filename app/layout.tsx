@@ -76,12 +76,12 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('theme');var t;(s==='light'||s==='dark')?t=s:t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.classList.add(t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='light'?'#f8fafc':'#0B0F19');}catch(e){document.documentElement.classList.add('dark');}})();`,
+            __html: `(function(){try{var s=localStorage.getItem('theme');var t=(s==='light'||s==='dark')?s:'dark';document.documentElement.classList.add(t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='light'?'#0b1628':'#070f1c');}catch(e){document.documentElement.classList.add('dark');}})();`,
           }}
         />
         <link rel="canonical" href="https://david-portfolio.vercel.app" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#0B0F19" />
+        <meta name="theme-color" content="#070f1c" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />

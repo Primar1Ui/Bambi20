@@ -150,7 +150,7 @@ export default function Navbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={prefersReducedMotion ? { opacity: 1, height: 'auto' } : { opacity: 0, height: 0 }}
               transition={prefersReducedMotion ? { duration: 0 } : {}}
-              className="mt-16 bg-[#0B0F19]/98 light:bg-slate-50/98 backdrop-blur-md border-t border-gray-800 light:border-gray-200"
+              className="mt-16 bg-[#070f1c]/98 backdrop-blur-md border-t border-gray-800"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-4 py-4 space-y-4">

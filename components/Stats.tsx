@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { portfolioStats } from '@/lib/data';
 
 interface StatProps {
@@ -11,11 +11,15 @@ interface StatProps {
 }
 
 function Stat({ value, label, suffix = '' }: StatProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const duration = 2000;
-    const steps = 60;
+    if (!inView) return;
+
+    const duration = 1600;
+    const steps = 48;
     const increment = value / steps;
     const stepDuration = duration / steps;
 
@@ -31,10 +35,10 @@ function Stat({ value, label, suffix = '' }: StatProps) {
     }, stepDuration);
 
     return () => clearInterval(timer);
-  }, [value]);
+  }, [inView, value]);
 
   return (
-    <div className="text-center">
+    <div ref={ref} className="text-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +58,7 @@ function Stat({ value, label, suffix = '' }: StatProps) {
 
 export default function Stats() {
   return (
-    <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-y border-gray-800/50 dark:border-gray-800/50 light:border-gray-200">
+    <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-y border-gray-800/50">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

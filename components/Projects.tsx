@@ -8,16 +8,23 @@ import { projects, whatsappContacts } from '@/lib/data';
 import { trackFunnel } from '@/lib/analytics';
 
 const allTags = Array.from(new Set(projects.flatMap((p) => p.tech))).sort();
+const categories = Array.from(
+  new Set(projects.map((p) => ('category' in p ? p.category : null)).filter(Boolean))
+) as string[];
 
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredProjects = useMemo(() => {
-    let list =
-      activeFilter === 'all'
-        ? projects
-        : projects.filter((p) => p.tech.includes(activeFilter));
+    let list = projects;
+    if (activeFilter !== 'all') {
+      list = list.filter(
+        (p) =>
+          p.tech.includes(activeFilter) ||
+          ('category' in p && p.category === activeFilter)
+      );
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
@@ -103,6 +110,19 @@ export default function Projects() {
           >
             All
           </button>
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveFilter(category)}
+              className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                activeFilter === category
+                  ? 'bg-purple-500/30 text-purple-300 border border-purple-500/50'
+                  : 'bg-gray-800/50 text-gray-400 border border-gray-700 hover:border-gray-600 hover:text-gray-300'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
           {allTags.map((tag) => (
             <button
               key={tag}

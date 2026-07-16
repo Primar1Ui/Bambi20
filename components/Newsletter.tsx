@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Loader2, Check, AlertCircle } from 'lucide-react';
 
-const NEWSLETTER_ENABLED = false;
+const NEWSLETTER_ENABLED = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
+  const [website, setWebsite] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
@@ -20,7 +21,7 @@ export default function Newsletter() {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), website }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
@@ -42,23 +43,34 @@ export default function Newsletter() {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 dark:border-gray-800/50 light:border-gray-200"
+      className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50"
     >
       <div className="max-w-xl mx-auto text-center">
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 mb-4">
           <Mail className="w-6 h-6" />
         </div>
-        <h2 className="text-2xl font-bold text-white dark:text-white light:text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-white mb-2">
           Stay in the loop
         </h2>
-        <p className="text-gray-400 dark:text-gray-400 light:text-gray-600 mb-6">
+        <p className="text-gray-400 mb-6">
           {NEWSLETTER_ENABLED
             ? 'Get occasional updates on new posts and projects. No spam.'
-            : 'Newsletter signup is coming soon. Meanwhile, reach out via the contact form.'}
+            : 'Newsletter signup activates once Supabase is configured. Meanwhile, reach out via the contact form.'}
         </p>
         {NEWSLETTER_ENABLED ? (
           <>
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <div className="absolute opacity-0 pointer-events-none h-0 overflow-hidden" aria-hidden="true">
+                <label htmlFor="newsletter-website">Website</label>
+                <input
+                  id="newsletter-website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
               <input
                 type="email"
                 value={email}
@@ -66,7 +78,7 @@ export default function Newsletter() {
                 placeholder="you@example.com"
                 required
                 disabled={status === 'loading'}
-                className="flex-1 px-4 py-3 rounded-xl bg-gray-800/50 dark:bg-gray-800/50 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-300 text-white dark:text-white light:text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60"
+                className="flex-1 px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60"
                 aria-label="Email address"
               />
               <button
