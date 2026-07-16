@@ -6,15 +6,13 @@ import { ExternalLink, Github } from 'lucide-react';
 import { projects } from '@/lib/data';
 import { trackFunnel } from '@/lib/analytics';
 
-const featuredMetrics = [
-  'Auth & dashboard analytics',
-  'AI-powered features',
-  'Production-ready deployment',
-];
-
 export default function FeaturedProject() {
   const featuredProject = projects.find((p) => 'featured' in p && p.featured) ?? projects[0];
-  const image = 'image' in featuredProject ? featuredProject.image : '/images/projects/placeholder.svg';
+  const image = featuredProject.image ?? '/images/projects/placeholder.svg';
+  const metrics =
+    'metrics' in featuredProject && Array.isArray(featuredProject.metrics)
+      ? featuredProject.metrics
+      : ['Auth & dashboard analytics', 'AI-powered features', 'Production-ready deployment'];
 
   return (
     <section
@@ -68,7 +66,7 @@ export default function FeaturedProject() {
                 </p>
               )}
               <ul className="flex flex-wrap gap-2 mb-6">
-                {featuredMetrics.map((metric, i) => (
+                {metrics.map((metric, i) => (
                   <li
                     key={i}
                     className="px-3 py-1.5 text-xs rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30"

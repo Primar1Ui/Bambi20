@@ -205,11 +205,11 @@ export const currentWork = {
 
 ## ✅ Phase 6 Checklist
 
-- [ ] Add project screenshots/demos
-- [ ] Add testimonials with photos/logos
-- [ ] Add featured project spotlight
-- [ ] Add skills progress/experience bars
-- [ ] Add "What I'm Working On" section
+- [x] Add project screenshots/demos
+- [x] Add testimonials with photos/logos
+- [x] Add featured project spotlight
+- [x] Add skills progress/experience bars
+- [x] Add "What I'm Working On" section
 
 ---
 

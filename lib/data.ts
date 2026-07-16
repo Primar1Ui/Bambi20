@@ -17,6 +17,7 @@ export const skills = {
   tools: [
     { name: 'Cursor', level: 90 },
     { name: 'GitHub', level: 92 },
+    { name: 'n8n', level: 86 },
     { name: 'Replit', level: 85 },
     { name: 'Vercel', level: 90 },
     { name: 'Rork AI', level: 82 },
@@ -37,8 +38,9 @@ export const projects = [
     live: "https://ai-web-canvas.vercel.app/",
     role: "Full-stack developer",
     results: "Implemented authentication, dashboard analytics, and AI-powered features for early-stage users.",
-    image: "/images/projects/placeholder.svg",
+    image: "/images/projects/ai-saas-dashboard.png",
     featured: true,
+    metrics: ["Auth + analytics", "AI-assisted workflows", "Production deploy"],
   },
   {
     title: "Finance Tracker App",
@@ -48,7 +50,7 @@ export const projects = [
     live: "https://dapper-access.vercel.app/",
     role: "Frontend & backend developer",
     results: "Built real-time expense tracking with Supabase, improving client visibility into cash flow.",
-    image: "/images/projects/placeholder.svg",
+    image: "/images/projects/finance-tracker.png",
   },
   {
     title: "Portfolio Website",
@@ -58,7 +60,7 @@ export const projects = [
     live: "https://v0-personal-portfolio-website-mocha-eta.vercel.app/",
     role: "Designer & developer",
     results: "Designed and developed a fast, SEO-friendly personal brand site with a strong contact funnel.",
-    image: "/images/projects/placeholder.svg",
+    image: "/images/projects/portfolio-website.png",
   },
   {
     title: "BaxAuto Website",
@@ -68,7 +70,7 @@ export const projects = [
     live: "https://v0-baxauto-website-development-qyak.vercel.app/",
     role: "Frontend developer",
     results: "Delivered a responsive landing experience tailored to the client brand.",
-    image: "/images/projects/placeholder.svg",
+    image: "/images/projects/baxauto-website.png",
   },
   {
     title: "Smart Expense & Budget Dashboard",
@@ -78,7 +80,7 @@ export const projects = [
     live: "https://smart-spend-dashboard.vercel.app/",
     role: "Full-stack developer",
     results: "Built a smart spend dashboard for expense tracking and budget visibility.",
-    image: "/images/projects/placeholder.svg",
+    image: "/images/projects/smart-spend-dashboard.png",
   },
   {
     title: "Refined Man",
@@ -88,7 +90,7 @@ export const projects = [
     live: "https://refined-man.vercel.app/",
     role: "Frontend developer",
     results: "Designed and built a polished men's accessories storefront.",
-    image: "/images/projects/placeholder.svg",
+    image: "/images/projects/refined-man.png",
   }
 ];
 
