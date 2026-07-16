@@ -1,6 +1,6 @@
 'use client';
 
-import { Component, type ReactNode } from 'react';
+import { Component, Fragment, type ReactNode } from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 interface Props {
@@ -11,15 +11,16 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  retryKey: number;
 }
 
 export default class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, retryKey: 0 };
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): Partial<State> {
     return { hasError: true, error };
   }
 
@@ -46,7 +47,13 @@ export default class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               type="button"
-              onClick={() => this.setState({ hasError: false })}
+              onClick={() =>
+                this.setState((state) => ({
+                  hasError: false,
+                  error: undefined,
+                  retryKey: state.retryKey + 1,
+                }))
+              }
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/50 font-medium hover:bg-blue-500/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
             >
               <RefreshCw className="w-4 h-4" />
@@ -59,6 +66,6 @@ export default class ErrorBoundary extends Component<Props, State> {
         </div>
       );
     }
-    return this.props.children;
+    return <Fragment key={this.state.retryKey}>{this.props.children}</Fragment>;
   }
 }

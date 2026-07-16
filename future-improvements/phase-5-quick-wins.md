@@ -202,12 +202,12 @@ import { trackFunnel } from '@/lib/analytics';
 
 ## ✅ Phase 5 Checklist
 
-- [ ] Add GitHub link to Footer
-- [ ] Add LinkedIn link to Footer (if available)
-- [ ] Update project live URLs (when deployed)
-- [ ] Add sitemap.xml
-- [ ] Add robots.txt
-- [ ] Add analytics tracking to social links
+- [x] Add GitHub link to Footer
+- [ ] Add LinkedIn link to Footer (deferred — no real profile URL yet)
+- [x] Update project live URLs (when deployed)
+- [x] Add sitemap.xml
+- [x] Add robots.txt
+- [x] Add analytics tracking to social links
 
 ---
 

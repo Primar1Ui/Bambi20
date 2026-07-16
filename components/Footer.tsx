@@ -1,14 +1,9 @@
 'use client';
 
-import { MessageCircle, Mail, Send, Github, Linkedin } from 'lucide-react';
+import { MessageCircle, Mail, Github } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackFunnel } from '@/lib/analytics';
-
-const whatsappNumbers = [
-  { country: 'NG', number: '+2349064082774', label: 'Nigeria' },
-  { country: 'US', number: '+16722749582', label: 'United States' },
-  { country: 'GER', number: '+4915213856751', label: 'Germany' },
-];
+import { whatsappContacts } from '@/lib/data';
 
 export default function Footer() {
   return (
@@ -29,21 +24,21 @@ export default function Footer() {
             viewport={{ once: true }}
             className="flex items-center gap-4 flex-wrap justify-center"
           >
-            {/* Email */}
             <a
               href="mailto:davidtosin306@gmail.com"
+              onClick={() => trackFunnel.emailClick('footer')}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
               aria-label="Email"
             >
               <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span className="text-sm font-medium">davidtosin306@gmail.com</span>
             </a>
-            
-            {/* Telegram */}
+
             <a
               href="https://t.me/mar_gdd"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackFunnel.telegramClick('footer')}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
               aria-label="Telegram"
             >
@@ -53,7 +48,6 @@ export default function Footer() {
               <span className="text-sm font-medium">Telegram</span>
             </a>
 
-            {/* GitHub */}
             <a
               href="https://github.com/Primar1Ui"
               target="_blank"
@@ -66,32 +60,19 @@ export default function Footer() {
               <span className="text-sm font-medium">GitHub</span>
             </a>
 
-            {/* LinkedIn — replace your-profile with your LinkedIn username */}
-            <a
-              href="https://linkedin.com/in/your-profile"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackFunnel.linkedinClick('footer')}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600/10 border border-blue-600/30 text-blue-400 hover:bg-blue-600/20 hover:border-blue-600/50 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">LinkedIn</span>
-            </a>
-            
-            {/* WhatsApp Buttons */}
-            {whatsappNumbers.map((item) => (
+            {whatsappContacts.map((contact) => (
               <a
-                key={item.country}
-                href={`https://wa.me/${item.number.replace(/[^0-9]/g, '')}`}
+                key={contact.id}
+                href={contact.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackFunnel.whatsappClick(`footer-${contact.id}`)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:border-green-500/50 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
-                aria-label={`WhatsApp ${item.label}`}
+                aria-label={`WhatsApp ${contact.label}`}
               >
                 <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 <span className="text-sm font-medium">
-                  {item.country} - {item.number}
+                  {contact.countryCode} · {contact.display}
                 </span>
               </a>
             ))}
@@ -101,4 +82,3 @@ export default function Footer() {
     </footer>
   );
 }
-

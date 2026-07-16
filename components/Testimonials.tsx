@@ -24,8 +24,13 @@ export default function Testimonials() {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-4" />
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            What clients say about working with me
+            Feedback from recent product and marketing engagements
           </p>
+          {testimonials.some((t) => t.illustrative) && (
+            <p className="text-sm text-gray-500 mt-3">
+              Sample anonymized quotes — replace with published client testimonials when available.
+            </p>
+          )}
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -11,31 +11,51 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function getPreferredTheme(): Theme {
+  if (typeof window === 'undefined') return 'dark';
+  try {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+    if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+  } catch {
+    // ignore storage / matchMedia errors
+  }
+  return 'dark';
+}
+
+function applyTheme(theme: Theme) {
+  if (typeof document === 'undefined') return;
+  document.documentElement.classList.remove('light', 'dark');
+  document.documentElement.classList.add(theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    meta.setAttribute('content', theme === 'light' ? '#f8fafc' : '#0B0F19');
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    const preferred = getPreferredTheme();
+    setTheme(preferred);
+    applyTheme(preferred);
     setMounted(true);
-    const stored = localStorage.getItem('theme') as Theme | null;
-    if (stored === 'light' || stored === 'dark') {
-      setTheme(stored);
-    } else if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) {
-      setTheme('light');
-    }
   }, []);
 
   useEffect(() => {
-    if (!mounted || typeof document === 'undefined') return;
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(theme);
+    if (!mounted) return;
+    applyTheme(theme);
   }, [theme, mounted]);
 
   const toggleTheme = () => {
     const newTheme: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    if (typeof localStorage !== 'undefined') {
+    try {
       localStorage.setItem('theme', newTheme);
+    } catch {
+      // ignore storage errors
     }
   };
 

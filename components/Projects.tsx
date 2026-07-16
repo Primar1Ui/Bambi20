@@ -4,13 +4,8 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { MessageCircle, Briefcase, Search } from 'lucide-react';
-import { projects } from '@/lib/data';
+import { projects, whatsappContacts } from '@/lib/data';
 import { trackFunnel } from '@/lib/analytics';
-
-const whatsappNumbers = [
-  { country: 'NG', number: '+2349064082774', label: 'Nigeria' },
-  { country: 'US', number: '+16722749582', label: 'United States' },
-];
 
 const allTags = Array.from(new Set(projects.flatMap((p) => p.tech))).sort();
 
@@ -36,7 +31,7 @@ export default function Projects() {
   }, [activeFilter, searchQuery]);
 
   const scrollToContact = () => {
-    trackFunnel.contactFormSubmit();
+    trackFunnel.contactCtaClick('projects');
     const element = document.querySelector('#contact');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -205,17 +200,18 @@ export default function Projects() {
                 
                 {/* WhatsApp Buttons */}
                 <div className="flex gap-2">
-                  {whatsappNumbers.map((item) => (
+                  {whatsappContacts.map((contact) => (
                     <a
-                      key={item.country}
-                      href={`https://wa.me/${item.number.replace(/[^0-9]/g, '')}`}
+                      key={contact.id}
+                      href={contact.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackFunnel.whatsappClick(`projects-${contact.id}`)}
                       className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:border-green-500/50 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
-                      aria-label={`WhatsApp ${item.label}`}
+                      aria-label={`WhatsApp ${contact.label}`}
                     >
                       <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                      <span className="text-xs font-medium">{item.country}</span>
+                      <span className="text-xs font-medium">{contact.countryCode}</span>
                     </a>
                   ))}
                 </div>

@@ -6,11 +6,21 @@
 .dark {
   --background: #0B0F19;
   --foreground: #FFFFFF;
+  --surface: rgba(17, 24, 39, 0.5);
+  --surface-solid: #1f2937;
+  --border: #1f2937;
+  --muted: #9ca3af;
+  --muted-strong: #d1d5db;
 }
 
 .light {
   --background: #f8fafc;
   --foreground: #0f172a;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-solid: #ffffff;
+  --border: #e2e8f0;
+  --muted: #64748b;
+  --muted-strong: #475569;
 }
 
 * {
@@ -45,6 +55,10 @@ body {
   outline: 2px solid #60a5fa;
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+.light *:focus-visible {
+  outline-color: #2563eb;
 }
 
 /* Skip to content link (hidden until focused) */
@@ -103,19 +117,117 @@ body {
   background: #2a2f3e;
 }
 
-/* Light mode overrides for key surfaces */
+/* Navbar surfaces */
 .navbar-bg {
   background-color: rgba(11, 15, 25, 0.95);
 }
 .light .navbar-bg {
   background-color: rgba(248, 250, 252, 0.98);
-  border-color: rgba(226, 232, 240, 0.5);
-}
-.light .navbar-bg .text-gray-300 {
-  color: #475569;
-}
-.light .navbar-bg .hover\:text-white:hover,
-.light .navbar-bg button:hover {
-  color: #0f172a;
+  border-color: rgba(226, 232, 240, 0.8);
 }
 
+/*
+ * Light mode remaps for dark-first Tailwind utilities used across sections.
+ * Accent / CTA surfaces keep white text via the exceptions below.
+ */
+.light .text-white {
+  color: #0f172a;
+}
+.light .text-gray-300 {
+  color: #475569;
+}
+.light .text-gray-400 {
+  color: #64748b;
+}
+.light .hover\:text-white:hover {
+  color: #0f172a;
+}
+.light .hover\:text-gray-300:hover {
+  color: #334155;
+}
+
+.light .bg-gray-900\/50,
+.light .bg-gray-900\/80 {
+  background-color: rgba(255, 255, 255, 0.92);
+}
+.light .bg-gray-800,
+.light .bg-gray-800\/50,
+.light .bg-gray-800\/80 {
+  background-color: #f1f5f9;
+}
+.light .bg-\[\#0B0F19\]\/98 {
+  background-color: rgba(248, 250, 252, 0.98);
+}
+.light .hover\:bg-gray-700:hover,
+.light .hover\:bg-gray-800:hover {
+  background-color: #e2e8f0;
+}
+.light .hover\:bg-gray-100:hover {
+  background-color: #f1f5f9;
+}
+
+.light .border-gray-800,
+.light .border-gray-800\/50 {
+  border-color: #e2e8f0;
+}
+.light .border-gray-700 {
+  border-color: #cbd5e1;
+}
+.light .border-t.border-gray-800,
+.light .border-y.border-gray-800\/50 {
+  border-color: #e2e8f0;
+}
+.light .hover\:border-gray-600:hover {
+  border-color: #94a3b8;
+}
+
+.light .ring-offset-\[\#0B0F19\],
+.light .focus-visible\:ring-offset-\[\#0B0F19\]:focus-visible {
+  --tw-ring-offset-color: #f8fafc;
+}
+.light .ring-offset-background,
+.light .focus-visible\:ring-offset-background:focus-visible,
+.light .focus\:ring-offset-background:focus {
+  --tw-ring-offset-color: #f8fafc;
+}
+
+/* Keep white text on accent CTAs / banners / badges */
+.light .bg-blue-500,
+.light .bg-blue-600,
+.light .bg-green-500,
+.light .bg-purple-600,
+.light [class*="from-blue-"][class*="to-"],
+.light [class*="from-purple-"][class*="to-"],
+.light [class*="bg-gradient-to-r"][class*="from-blue"],
+.light [class*="bg-gradient-to-r"][class*="from-purple"] {
+  color: #fff;
+}
+.light .bg-blue-500 .text-white,
+.light .bg-blue-600 .text-white,
+.light .bg-green-500 .text-white,
+.light [class*="from-blue-"][class*="to-"] .text-white,
+.light [class*="from-purple-"][class*="to-"] .text-white,
+.light [class*="bg-gradient-to-r"][class*="from-blue"] .text-white,
+.light [class*="bg-gradient-to-r"][class*="from-purple"] .text-white {
+  color: #fff;
+}
+
+/* Soft secondary buttons in light mode (e.g. Download CV) */
+.light a.bg-gray-800.text-white,
+.light button.bg-gray-800.text-white {
+  color: #0f172a;
+  background-color: #fff;
+  border-color: #cbd5e1;
+}
+.light a.bg-gray-800.text-white:hover,
+.light button.bg-gray-800.text-white:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* Form inputs stay readable */
+.light input.text-white,
+.light textarea.text-white,
+.light select.text-white {
+  color: #0f172a;
+}

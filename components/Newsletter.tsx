@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Loader2, Check, AlertCircle } from 'lucide-react';
 
+const NEWSLETTER_ENABLED = false;
+
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -11,7 +13,7 @@ export default function Newsletter() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!NEWSLETTER_ENABLED || !email.trim()) return;
     setStatus('loading');
     setMessage('');
     try {
@@ -50,43 +52,58 @@ export default function Newsletter() {
           Stay in the loop
         </h2>
         <p className="text-gray-400 dark:text-gray-400 light:text-gray-600 mb-6">
-          Get occasional updates on new posts and projects. No spam.
+          {NEWSLETTER_ENABLED
+            ? 'Get occasional updates on new posts and projects. No spam.'
+            : 'Newsletter signup is coming soon. Meanwhile, reach out via the contact form.'}
         </p>
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-            disabled={status === 'loading'}
-            className="flex-1 px-4 py-3 rounded-xl bg-gray-800/50 dark:bg-gray-800/50 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-300 text-white dark:text-white light:text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60"
-            aria-label="Email address"
-          />
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-background"
-          >
-            {status === 'loading' ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Subscribing…
-              </>
-            ) : (
-              'Subscribe'
+        {NEWSLETTER_ENABLED ? (
+          <>
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                disabled={status === 'loading'}
+                className="flex-1 px-4 py-3 rounded-xl bg-gray-800/50 dark:bg-gray-800/50 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-300 text-white dark:text-white light:text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60"
+                aria-label="Email address"
+              />
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-background"
+              >
+                {status === 'loading' ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Subscribing…
+                  </>
+                ) : (
+                  'Subscribe'
+                )}
+              </button>
+            </form>
+            {message && (
+              <p
+                className={`mt-4 text-sm flex items-center justify-center gap-2 ${
+                  status === 'success' ? 'text-green-400' : 'text-red-400'
+                }`}
+                role="status"
+                aria-live="polite"
+              >
+                {status === 'success' ? <Check className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                {message}
+              </p>
             )}
-          </button>
-        </form>
-        {message && (
-          <p
-            className={`mt-4 text-sm flex items-center justify-center gap-2 ${
-              status === 'success' ? 'text-green-400' : 'text-red-400'
-            }`}
+          </>
+        ) : (
+          <a
+            href="#contact"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-background"
           >
-            {status === 'success' ? <Check className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-            {message}
-          </p>
+            Contact me instead
+          </a>
         )}
       </div>
     </motion.section>

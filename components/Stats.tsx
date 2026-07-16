@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { portfolioStats } from '@/lib/data';
 
 interface StatProps {
   value: number;
@@ -61,10 +62,10 @@ export default function Stats() {
           viewport={{ once: true }}
           className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
         >
-          <Stat value={4} label="Projects Completed" suffix="+" />
-          <Stat value={3} label="Happy Clients" suffix="+" />
-          <Stat value={3} label="Years Experience" suffix="+" />
-          <Stat value={100} label="GitHub Contributions" suffix="+" />
+          <Stat value={portfolioStats.projects} label="Projects Completed" suffix="+" />
+          <Stat value={portfolioStats.clients} label="Happy Clients" suffix="+" />
+          <Stat value={portfolioStats.yearsExperience} label="Years Experience" suffix="+" />
+          <Stat value={portfolioStats.githubContributions} label="GitHub Contributions" suffix="+" />
         </motion.div>
       </div>
     </section>

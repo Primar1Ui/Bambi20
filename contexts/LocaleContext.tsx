@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import enMessages from '@/messages/en.json';
 
 export type Locale = 'en' | 'es' | 'fr';
 
@@ -28,7 +29,7 @@ function getNested(obj: Record<string, unknown>, path: string): string | undefin
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('en');
-  const [messages, setMessages] = useState<Messages | null>(null);
+  const [messages, setMessages] = useState<Messages>(enMessages as Messages);
 
   useEffect(() => {
     try {
@@ -40,17 +41,28 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (locale === 'en') {
+      setMessages(enMessages as Messages);
+      return;
+    }
+
     let cancelled = false;
     import(`@/messages/${locale}.json`)
       .then((mod) => {
         if (!cancelled) setMessages(mod.default as Messages);
       })
       .catch(() => {
-        if (!cancelled) setMessages({});
+        if (!cancelled) setMessages(enMessages as Messages);
       });
     return () => {
       cancelled = true;
     };
+  }, [locale]);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = locale;
+    }
   }, [locale]);
 
   const setLocale = useCallback((newLocale: Locale) => {
@@ -62,7 +74,6 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback(
     (key: string): string => {
-      if (!messages) return key;
       const value = getNested(messages as unknown as Record<string, unknown>, key);
       return value ?? key;
     },

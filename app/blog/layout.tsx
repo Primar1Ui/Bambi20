@@ -1,4 +1,6 @@
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import BackToTop from '@/components/BackToTop';
 
 export default function BlogLayout({
   children,
@@ -9,6 +11,8 @@ export default function BlogLayout({
     <>
       <Navbar />
       {children}
+      <Footer />
+      <BackToTop />
     </>
   );
 }

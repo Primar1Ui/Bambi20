@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useLocale } from '@/contexts/LocaleContext';
 import ThemeToggle from '@/components/ThemeToggle';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const navItems = [
   { key: 'nav.home', href: '#home' },
@@ -22,6 +22,9 @@ const navItems = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuPanelRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { t } = useLocale();
 
@@ -33,16 +36,48 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const panel = menuPanelRef.current;
+    const focusable = panel?.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])'
+    );
+    focusable?.[0]?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+        menuButtonRef.current?.focus();
+        return;
+      }
+      if (event.key !== 'Tab' || !focusable?.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const handleNavClick = (href: string) => {
     setIsOpen(false);
     if (href.startsWith('/')) {
-      // External route navigation
-      window.location.href = href;
+      router.push(href);
     } else {
-      // Anchor link navigation
       const element = document.querySelector(href);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        router.push(`/${href}`);
       }
     }
   };
@@ -77,16 +112,17 @@ export default function Navbar() {
                 {t(item.key)}
               </button>
             ))}
-            <LanguageSwitcher />
             <ThemeToggle />
           </div>
 
           {/* Mobile Menu Button */}
           <button
+            ref={menuButtonRef}
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-gray-300 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] rounded p-1"
             aria-label="Toggle menu"
             aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -105,20 +141,22 @@ export default function Navbar() {
             onClick={() => setIsOpen(false)}
           >
             <motion.div
+              ref={menuPanelRef}
+              id="mobile-navigation"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site navigation"
               initial={prefersReducedMotion ? { opacity: 1, height: 'auto' } : { opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={prefersReducedMotion ? { opacity: 1, height: 'auto' } : { opacity: 0, height: 0 }}
               transition={prefersReducedMotion ? { duration: 0 } : {}}
-              className="mt-16 bg-[#0B0F19]/98 backdrop-blur-md border-t border-gray-800"
+              className="mt-16 bg-[#0B0F19]/98 light:bg-slate-50/98 backdrop-blur-md border-t border-gray-800 light:border-gray-200"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-4 py-4 space-y-4">
                 <div className="flex items-center justify-between mb-2 gap-2">
                   <span className="text-sm text-gray-400">{t('nav.theme')}</span>
-                  <div className="flex items-center gap-2">
-                    <LanguageSwitcher />
-                    <ThemeToggle />
-                  </div>
+                  <ThemeToggle />
                 </div>
                 {navItems.map((item) => (
                   <button

@@ -26,51 +26,70 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+function renderInline(text: string) {
+  return text
+    .split(/(\*\*.*?\*\*|`.*?`|\*.*?\*)/g)
+    .filter(Boolean)
+    .map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index} className="font-semibold text-gray-300">{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return (
+          <code key={index} className="rounded bg-gray-800 px-1.5 py-0.5 text-sm text-cyan-300">
+            {part.slice(1, -1)}
+          </code>
+        );
+      }
+      if (part.startsWith('*') && part.endsWith('*')) {
+        return <em key={index}>{part.slice(1, -1)}</em>;
+      }
+      return part;
+    });
+}
+
 function renderContent(content: string) {
   const lines = content.trim().split('\n');
   const elements: React.ReactNode[] = [];
-  let inList = false;
+  let listType: 'ordered' | 'unordered' | null = null;
   let listItems: string[] = [];
 
   const flushList = () => {
-    if (listItems.length > 0) {
-      elements.push(
-        <ul key={elements.length} className="list-disc list-inside space-y-1 text-gray-400 mb-4">
-          {listItems.map((item, i) => (
-            <li key={i}>{item.replace(/^[-*]\s*/, '')}</li>
-          ))}
-        </ul>
-      );
-      listItems = [];
-    }
-    inList = false;
+    if (!listType || listItems.length === 0) return;
+    const items = listItems.map((item, index) => <li key={index}>{renderInline(item)}</li>);
+    const className = 'space-y-2 text-gray-400 mb-5 pl-6';
+    elements.push(
+      listType === 'ordered' ? (
+        <ol key={elements.length} className={`list-decimal ${className}`}>{items}</ol>
+      ) : (
+        <ul key={elements.length} className={`list-disc ${className}`}>{items}</ul>
+      )
+    );
+    listType = null;
+    listItems = [];
   };
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  for (const line of lines) {
+    const orderedMatch = line.match(/^\d+\.\s+(.+)/);
+    const unorderedMatch = line.match(/^[-*]\s+(.+)/);
+
     if (line.startsWith('## ')) {
       flushList();
       elements.push(
         <h2 key={elements.length} className="text-2xl font-bold text-white mt-8 mb-4">
-          {line.slice(3)}
+          {renderInline(line.slice(3))}
         </h2>
       );
-    } else if (line.startsWith('- ') || line.startsWith('* ')) {
-      if (!inList) flushList();
-      inList = true;
-      listItems.push(line);
-    } else if (line.startsWith('**') && line.endsWith('**')) {
-      flushList();
-      elements.push(
-        <p key={elements.length} className="text-gray-400 mb-4 font-semibold text-gray-300">
-          {line.slice(2, -2)}
-        </p>
-      );
+    } else if (orderedMatch || unorderedMatch) {
+      const nextType: 'ordered' | 'unordered' = orderedMatch ? 'ordered' : 'unordered';
+      if (listType && listType !== nextType) flushList();
+      listType = nextType;
+      listItems.push((orderedMatch ?? unorderedMatch)![1]);
     } else if (line.trim()) {
       flushList();
       elements.push(
         <p key={elements.length} className="text-gray-400 mb-4 leading-relaxed">
-          {line}
+          {renderInline(line)}
         </p>
       );
     } else {

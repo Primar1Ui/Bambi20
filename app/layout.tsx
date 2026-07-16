@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
   },
   metadataBase: new URL("https://david-portfolio.vercel.app"),
 };
@@ -76,7 +76,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('theme');if(s==='light')document.documentElement.classList.add('light');else if(s==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`,
+            __html: `(function(){try{var s=localStorage.getItem('theme');var t;(s==='light'||s==='dark')?t=s:t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.classList.add(t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='light'?'#f8fafc':'#0B0F19');}catch(e){document.documentElement.classList.add('dark');}})();`,
           }}
         />
         <link rel="canonical" href="https://david-portfolio.vercel.app" />
@@ -84,7 +84,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#0B0F19" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="apple-touch-icon" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -117,6 +117,7 @@ export default function RootLayout({
                 "Supabase",
                 "Tailwind CSS",
                 "AI Integration",
+                "n8n Workflow Automation",
                 "SaaS MVP Development",
               ],
             }),
@@ -148,7 +149,7 @@ export default function RootLayout({
             <ErrorBoundary>
               <PWARegister />
               <KeyboardShortcuts />
-            <a href="#home" className="skip-to-content">
+            <a href="#main-content" className="skip-to-content">
               Skip to content
             </a>
             {children}

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Rocket, Mail, MessageCircle, ArrowRight, Download } from 'lucide-react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { trackFunnel } from '@/lib/analytics';
+import { portfolioStats, primaryWhatsApp } from '@/lib/data';
 
 const TEXTS = [
   "Full-Stack Developer",
@@ -23,6 +24,15 @@ export default function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    if (prefersReducedMotion) {
+      setDisplayedText(TEXTS[0]);
+      setShowCursor(false);
+      setIsDeleting(false);
+    }
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
     let timeout: NodeJS.Timeout;
     const currentText = TEXTS[currentTextIndex];
     
@@ -48,15 +58,16 @@ export default function Hero() {
     }
 
     return () => clearTimeout(timeout);
-  }, [displayedText, isDeleting, currentTextIndex]);
+  }, [displayedText, isDeleting, currentTextIndex, prefersReducedMotion]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
     const cursorInterval = setInterval(() => {
       setShowCursor((prev) => !prev);
     }, 530);
 
     return () => clearInterval(cursorInterval);
-  }, []);
+  }, [prefersReducedMotion]);
 
   const handleViewProjects = () => {
     trackFunnel.heroViewProjects();
@@ -168,13 +179,14 @@ export default function Hero() {
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
           <a
-            href="https://wa.me/16722749582"
+            href={primaryWhatsApp.href}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackFunnel.whatsappClick('hero-cta')}
             className="flex items-center gap-2 px-6 py-3 bg-blue-500 border-2 border-blue-400 rounded-xl font-semibold text-white hover:bg-blue-600 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
           >
-            <Mail className="w-5 h-5" />
-            <span>Get In Touch</span>
+            <MessageCircle className="w-5 h-5" />
+            <span>Chat on WhatsApp</span>
           </a>
           <a
             href="/cv.pdf"
@@ -195,11 +207,15 @@ export default function Hero() {
           className="flex items-center justify-center gap-8 md:gap-12 mb-8"
         >
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-1">12+</div>
+            <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-1">
+              {portfolioStats.projects}+
+            </div>
             <div className="text-sm md:text-base text-gray-400">Projects</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-green-400 mb-1">7+</div>
+            <div className="text-3xl md:text-4xl font-bold text-green-400 mb-1">
+              {portfolioStats.clients}+
+            </div>
             <div className="text-sm md:text-base text-gray-400">Clients</div>
           </div>
         </motion.div>
@@ -213,17 +229,19 @@ export default function Hero() {
         >
           <a
             href="mailto:davidtosin306@gmail.com"
+            onClick={() => trackFunnel.emailClick('hero')}
             className="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-white hover:bg-gray-700 hover:border-blue-400 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
             aria-label="Email"
           >
             <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
           </a>
           <a
-            href="https://wa.me/16722749582"
+            href={primaryWhatsApp.href}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackFunnel.whatsappClick('hero-icon')}
             className="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-green-400 hover:bg-gray-700 hover:border-green-400 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
-            aria-label="WhatsApp"
+            aria-label={`WhatsApp (${primaryWhatsApp.label})`}
           >
             <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
           </a>
@@ -231,6 +249,7 @@ export default function Hero() {
             href="https://t.me/mar_gdd"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackFunnel.telegramClick('hero')}
             className="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-blue-400 hover:bg-gray-700 hover:border-blue-400 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
             aria-label="Telegram"
           >

@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, CheckCircle2 } from 'lucide-react';
 import { CaseStudy } from '@/lib/caseStudies';
-import Link from 'next/link';
 
 interface CaseStudyCardProps {
   caseStudy: CaseStudy;

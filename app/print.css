@@ -4,8 +4,6 @@
   nav,
   footer,
   .skip-to-content,
-  [class*="BackToTop"],
-  [class*="ThemeToggle"],
   button[aria-label="Toggle menu"],
   .no-print {
     display: none !important;

@@ -8,6 +8,7 @@ import About from '@/components/About';
 import CurrentWork from '@/components/CurrentWork';
 import Skills from '@/components/Skills';
 import Services from '@/components/Services';
+import AutomationShowcase from '@/components/AutomationShowcase';
 import Contact from '@/components/Contact';
 import Newsletter from '@/components/Newsletter';
 import Footer from '@/components/Footer';
@@ -25,7 +26,7 @@ const Testimonials = dynamic(() => import('@/components/Testimonials'), {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen" tabIndex={-1}>
       <Navbar />
       <HireMeBanner />
       <Hero />
@@ -36,6 +37,7 @@ export default function Home() {
       <Skills />
       <Projects />
       <Services />
+      <AutomationShowcase />
       <Testimonials />
       <Contact />
       <Newsletter />

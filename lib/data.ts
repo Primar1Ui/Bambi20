@@ -92,11 +92,50 @@ export const projects = [
   }
 ];
 
+export const portfolioStats = {
+  projects: projects.length,
+  clients: 3,
+  yearsExperience: 3,
+  githubContributions: 100,
+};
+
+/** Canonical WhatsApp contacts used across Hero, Contact, Projects, Footer */
+export const whatsappContacts = [
+  {
+    id: 'us',
+    countryCode: 'US',
+    label: 'United States',
+    display: '+1 672 274 9582',
+    href: 'https://wa.me/16722749582',
+    primary: true,
+  },
+  {
+    id: 'ng',
+    countryCode: 'NG',
+    label: 'Nigeria',
+    display: '+234 906 408 2774',
+    href: 'https://wa.me/2349064082774',
+    primary: false,
+  },
+  {
+    id: 'de',
+    countryCode: 'DE',
+    label: 'Germany',
+    display: '+49 152 138 56751',
+    href: 'https://wa.me/4915213856751',
+    primary: false,
+  },
+] as const;
+
+export const primaryWhatsApp = whatsappContacts.find((c) => c.primary)!;
+
 export const services = [
   "Frontend Development",
   "Backend Development",
   "Full-Stack Web Applications",
   "AI App Integration",
+  "n8n Workflow Automation",
+  "AI Lead Qualification",
   "Supabase Setup & Authentication",
   "Bug Fixing & Optimization",
   "SaaS MVP Development"

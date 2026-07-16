@@ -27,7 +27,7 @@ export default function HireMeBanner() {
   if (dismissed) return null;
 
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 border-b border-blue-500/30 print:hidden">
+    <div className="mt-16 md:mt-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 border-b border-blue-500/30 print:hidden">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm md:text-base flex items-center gap-2">
           <Rocket className="w-4 h-4 flex-shrink-0" aria-hidden />
