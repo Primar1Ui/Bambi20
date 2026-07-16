@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Bot, GitBranch, Workflow } from 'lucide-react';
+import { Bot, GitBranch, Workflow, Boxes, Users, CalendarCheck, Sparkles, FileSpreadsheet } from 'lucide-react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 const automations = [
@@ -33,6 +33,60 @@ const automations = [
     icon: Bot,
     tags: ['AI agents', 'Lead scoring', 'Notifications'],
   },
+  {
+    title: 'AI Inventory & Auto-Restock',
+    description:
+      'Scheduled n8n system that analyzes inventory, updates Airtable records, and triggers restock emails automatically.',
+    image: '/images/automation-inventory-restock.png',
+    alt: 'n8n AI-powered inventory management and auto-restock workflow with Airtable and Gmail',
+    icon: Boxes,
+    tags: ['n8n', 'Airtable', 'AI analysis'],
+  },
+  {
+    title: 'AI Recruiting Funnel',
+    description:
+      'End-to-end candidate pipeline that scores applicants, alerts the team on Slack and email, and books interviews.',
+    image: '/images/automation-recruiting-funnel.png',
+    alt: 'n8n AI recruiting funnel workflow with candidate scoring, Slack, Gmail, and scheduling',
+    icon: Users,
+    tags: ['n8n', 'AI scoring', 'Slack + Gmail'],
+  },
+  {
+    title: 'AI Content Routing with Groq',
+    description:
+      'Branching n8n flow that runs Groq LLM chains, formats results, merges paths, and logs output to Google Sheets.',
+    image: '/images/automation-groq-content-routing.png',
+    alt: 'n8n workflow with Groq chat models, branching LLM chains, merge, and Google Sheets',
+    icon: Sparkles,
+    tags: ['n8n', 'Groq LLM', 'Branching'],
+  },
+  {
+    title: 'Zapier Event RSVP System',
+    description:
+      'Zapier system that finds records, splits into conditional paths, and creates records or sends reminders per RSVP.',
+    image: '/images/automation-zapier-rsvp-paths.png',
+    alt: 'Zapier event RSVP system with Airtable record lookup, paths, and Slack reminders',
+    icon: CalendarCheck,
+    tags: ['Zapier', 'Airtable', 'Paths'],
+  },
+  {
+    title: 'Zapier RSVP Slack Alerts',
+    description:
+      'New event registrations flow straight into a Slack channel with formatted attendee details for the team.',
+    image: '/images/automation-rsvp-slack.png',
+    alt: 'Slack channel receiving new event registration alerts sent by Zapier',
+    icon: Bot,
+    tags: ['Zapier', 'Slack', 'Notifications'],
+  },
+  {
+    title: 'Zapier Form-to-Sheet Sync',
+    description:
+      'Google Forms responses are looked up and written into Google Sheets rows automatically with no manual entry.',
+    image: '/images/automation-zapier-forms-sheets.png',
+    alt: 'Zapier workflow syncing Google Forms responses into Google Sheets rows',
+    icon: FileSpreadsheet,
+    tags: ['Zapier', 'Google Forms', 'Google Sheets'],
+  },
 ];
 
 export default function AutomationShowcase() {
@@ -61,7 +115,7 @@ export default function AutomationShowcase() {
             </span>
           </h2>
           <p className="max-w-2xl mx-auto text-lg text-gray-400">
-            I design n8n and AI-powered systems that connect tools, process data, and keep
+            I build n8n, Zapier, and AI-powered systems that connect tools, process data, and keep
             business workflows moving without repetitive manual steps.
           </p>
         </motion.div>

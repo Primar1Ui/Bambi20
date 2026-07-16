@@ -113,8 +113,8 @@ export const whatsappContacts = [
     id: 'us',
     countryCode: 'US',
     label: 'United States',
-    display: '+1 672 274 9582',
-    href: 'https://wa.me/16722749582',
+    display: '+1 541 378 1097',
+    href: 'https://wa.me/15413781097',
     primary: true,
   },
   {
@@ -123,14 +123,6 @@ export const whatsappContacts = [
     label: 'Nigeria',
     display: '+234 906 408 2774',
     href: 'https://wa.me/2349064082774',
-    primary: false,
-  },
-  {
-    id: 'de',
-    countryCode: 'DE',
-    label: 'Germany',
-    display: '+49 152 138 56751',
-    href: 'https://wa.me/4915213856751',
     primary: false,
   },
 ] as const;
