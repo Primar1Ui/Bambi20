@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -92,14 +93,27 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          <motion.div
+          <motion.a
+            href="#home"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('#home');
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={prefersReducedMotion ? { duration: 0 } : {}}
-            className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent"
+            className="inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c] rounded-lg"
+            aria-label="bambi20 — home"
           >
-            David
-          </motion.div>
+            <Image
+              src="/images/logo-bambi20.svg"
+              alt="bambi20"
+              width={148}
+              height={32}
+              priority
+              className="h-7 md:h-8 w-auto"
+            />
+          </motion.a>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
