@@ -12,30 +12,30 @@ npm install
 
 ### 2. Environment Variables
 
-Create a `.env.local` file in the root directory:
+Create a `.env.local` file in the root directory (copy from `.env.example`):
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_public_key
 ```
+
+These same two variables power **both** the contact form and the newsletter signup.
 
 ### 3. Supabase Setup
 
-1. Go to [Supabase](https://supabase.com) and create a new project
-2. In the SQL Editor, run this query to create the contacts table:
+1. Go to [Supabase](https://supabase.com) and create a new project.
+2. Open **SQL Editor → New query**, paste the contents of
+   [`supabase/schema.sql`](./supabase/schema.sql), and run it. This creates the
+   `contacts` and `newsletter_subscribers` tables **and** enables Row Level
+   Security with insert-only policies.
+3. Copy your **Project URL** and **anon public** key from
+   **Project Settings → API**.
+4. Add them to your `.env.local` file (and to Vercel — see Deployment below).
 
-```sql
-CREATE TABLE contacts (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  message TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
-);
-```
-
-3. Copy your project URL and anon key from Settings > API
-4. Add them to your `.env.local` file
+> **Why RLS matters:** the app connects with the public `anon` key, which ships
+> to the browser. The policies in `schema.sql` allow visitors to *insert*
+> messages/emails but **not read** them, so your submissions and subscriber
+> list stay private. Never expose the `service_role` key in the frontend.
 
 ### 4. Add Your Profile Picture
 
@@ -112,20 +112,32 @@ Edit `app/layout.tsx` to update metadata, title, and description.
 
 ### Environment Variables in Vercel
 
-Make sure to add:
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+In your Vercel project: **Settings → Environment Variables**, add the following
+for **Production, Preview, and Development**:
+
+| Name | Value |
+|------|-------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon public key |
+
+Then **redeploy** (Deployments → ⋯ → Redeploy) so the new variables take
+effect. Because the variables are `NEXT_PUBLIC_*`, a fresh build is required —
+they are inlined at build time, not read at runtime.
+
+After redeploy, the newsletter form flips from "activates once Supabase is
+configured" to a live signup form automatically.
 
 ## ✅ Checklist
 
 - [ ] Install dependencies (`npm install`)
-- [ ] Set up Supabase project and create contacts table
+- [ ] Set up Supabase project and run `supabase/schema.sql` (tables + RLS)
 - [ ] Add environment variables to `.env.local`
+- [ ] Add the same variables in Vercel (Production/Preview/Development) and redeploy
 - [ ] Add profile picture to `public/images/profile.jpg`
 - [ ] Update social links in Footer
 - [ ] Customize content in `lib/data.ts`
-- [ ] Test contact form
-- [ ] Deploy to Vercel
+- [ ] Test contact form and newsletter signup on the live site
+- [ ] Confirm rows appear in Supabase (Table Editor → `contacts` / `newsletter_subscribers`)
 
 ## 🐛 Troubleshooting
 
