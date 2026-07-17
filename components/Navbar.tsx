@@ -40,6 +40,9 @@ export default function Navbar() {
   useEffect(() => {
     if (!isOpen) return;
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const panel = menuPanelRef.current;
     const focusable = panel?.querySelectorAll<HTMLElement>(
       'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])'
@@ -66,7 +69,10 @@ export default function Navbar() {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
   }, [isOpen]);
 
   const handleNavClick = (href: string) => {
@@ -84,11 +90,16 @@ export default function Navbar() {
   };
 
   return (
+    <>
     <motion.nav
       initial={prefersReducedMotion ? { y: 0 } : { y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'navbar-bg backdrop-blur-md shadow-lg border-b border-gray-800/50' : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 transition-all duration-300 ${
+        isOpen ? 'z-[100]' : 'z-50'
+      } ${
+        scrolled || isOpen
+          ? 'navbar-bg backdrop-blur-md shadow-lg border-b border-gray-800/50'
+          : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -142,17 +153,19 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+    </motion.nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu — rendered outside nav so fixed positioning covers the viewport */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
-            transition={prefersReducedMotion ? { duration: 0 } : {}}
-            className="md:hidden fixed inset-0 z-40 bg-black/40"
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.2 }}
+            className="md:hidden fixed inset-0 z-[90] bg-[#070f1c]"
             onClick={() => setIsOpen(false)}
+            aria-hidden={!isOpen}
           >
             <motion.div
               ref={menuPanelRef}
@@ -160,23 +173,23 @@ export default function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Site navigation"
-              initial={prefersReducedMotion ? { opacity: 1, height: 'auto' } : { opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={prefersReducedMotion ? { opacity: 1, height: 'auto' } : { opacity: 0, height: 0 }}
-              transition={prefersReducedMotion ? { duration: 0 } : {}}
-              className="mt-16 bg-[#070f1c]/98 backdrop-blur-md border-t border-gray-800"
+              initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.2 }}
+              className="absolute inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-gray-800 bg-[#070f1c]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-4 py-4 space-y-4">
-                <div className="flex items-center justify-between mb-2 gap-2">
-                  <span className="text-sm text-gray-400">{t('nav.theme')}</span>
+              <div className="px-4 py-6 space-y-1">
+                <div className="flex items-center justify-between mb-4 gap-2 pb-4 border-b border-gray-800">
+                  <span className="text-sm font-medium text-gray-300">{t('nav.theme')}</span>
                   <ThemeToggle />
                 </div>
                 {navItems.map((item) => (
                   <button
                     key={item.key}
                     onClick={() => handleNavClick(item.href)}
-                    className="block w-full text-left text-gray-300 hover:text-white transition-colors py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] rounded px-2"
+                    className="block w-full text-left text-lg text-gray-100 hover:text-cyan-300 transition-colors py-3 px-2 rounded-lg hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c]"
                   >
                     {t(item.key)}
                   </button>
@@ -186,7 +199,7 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </>
   );
 }
 
