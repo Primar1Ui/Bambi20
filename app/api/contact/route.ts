@@ -82,10 +82,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if Supabase is configured
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl =
+      process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ||
+      process.env.SUPABASE_URL?.trim();
+    const supabaseAnonKey =
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ||
+      process.env.SUPABASE_ANON_KEY?.trim();
 
     if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('[contact] Missing Supabase env vars', {
+        hasUrl: Boolean(supabaseUrl),
+        hasAnonKey: Boolean(supabaseAnonKey),
+      });
       return NextResponse.json(
         {
           error: 'Contact form is temporarily unavailable. Please contact me directly via WhatsApp or email.',
