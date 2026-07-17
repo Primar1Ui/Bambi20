@@ -59,11 +59,16 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  metadataBase: new URL("https://david-portfolio.vercel.app"),
+  metadataBase: new URL("https://mymainportfolio-one.vercel.app"),
 };
 
 export default function RootLayout({
@@ -79,13 +84,17 @@ export default function RootLayout({
             __html: `(function(){try{var s=localStorage.getItem('theme');var t=(s==='light'||s==='dark')?s:'dark';document.documentElement.classList.add(t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='light'?'#0b1628':'#070f1c');}catch(e){document.documentElement.classList.add('dark');}})();`,
           }}
         />
-        <link rel="canonical" href="https://david-portfolio.vercel.app" />
+        <link rel="canonical" href="https://mymainportfolio-one.vercel.app" />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link
           rel="alternate"
           type="application/rss+xml"
-          title="David's Blog RSS"
-          href="https://david-portfolio.vercel.app/feed"
+          title="bambi20 Blog RSS"
+          href="https://mymainportfolio-one.vercel.app/feed"
         />
         <meta name="theme-color" content="#070f1c" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
