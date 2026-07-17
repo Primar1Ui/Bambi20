@@ -127,6 +127,31 @@ they are inlined at build time, not read at runtime.
 After redeploy, the newsletter form flips from "activates once Supabase is
 configured" to a live signup form automatically.
 
+### Email notifications (Resend)
+
+Contact and newsletter submissions are stored in Supabase. To also get an
+email ping when someone submits:
+
+1. Create a free account at [resend.com](https://resend.com).
+2. Go to **API Keys → Create API Key**, copy the key (starts with `re_`).
+3. In Vercel → **Settings → Environment Variables**, add:
+
+| Name | Value |
+|------|-------|
+| `RESEND_API_KEY` | your `re_…` key |
+| `NOTIFY_EMAIL` | `davidtosin306@gmail.com` (or whichever inbox should get alerts) |
+| `RESEND_FROM_EMAIL` | `Portfolio <onboarding@resend.dev>` |
+
+4. Redeploy.
+
+> With Resend’s free onboarding sender (`onboarding@resend.dev`), you can only
+> send **to the email address you used to sign up for Resend**. Make sure
+> `NOTIFY_EMAIL` matches that address. To send from your own domain later,
+> verify a domain in Resend and update `RESEND_FROM_EMAIL`.
+
+Notifications are best-effort: if Resend fails or is missing, the form still
+saves to Supabase successfully.
+
 ## ✅ Checklist
 
 - [ ] Install dependencies (`npm install`)
@@ -138,6 +163,7 @@ configured" to a live signup form automatically.
 - [ ] Customize content in `lib/data.ts`
 - [ ] Test contact form and newsletter signup on the live site
 - [ ] Confirm rows appear in Supabase (Table Editor → `contacts` / `newsletter_subscribers`)
+- [ ] (Optional) Add Resend env vars and confirm you receive notification emails
 
 ## 🐛 Troubleshooting
 

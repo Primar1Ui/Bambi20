@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabaseClient';
+import { notifyContactSubmission } from '@/lib/notifyEmail';
 
 // Force dynamic rendering to prevent build-time errors
 export const dynamic = 'force-dynamic';
@@ -109,14 +110,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedMessage = message.trim();
+
     // Insert into Supabase
     const { error } = await supabase
       .from('contacts')
       .insert([
         {
-          name: name.trim(),
-          email: email.trim(),
-          message: message.trim(),
+          name: trimmedName,
+          email: trimmedEmail,
+          message: trimmedMessage,
         },
       ]);
 
@@ -140,6 +145,13 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Best-effort email ping — never blocks a successful save
+    await notifyContactSubmission({
+      name: trimmedName,
+      email: trimmedEmail,
+      message: trimmedMessage,
+    });
 
     return NextResponse.json(
       { message: 'Message sent successfully!' },

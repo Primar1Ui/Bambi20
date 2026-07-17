@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabaseClient';
+import { notifyNewsletterSignup } from '@/lib/notifyEmail';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -71,6 +72,9 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Best-effort email ping — never blocks a successful save
+    await notifyNewsletterSignup(email);
 
     return NextResponse.json({
       success: true,
