@@ -1,0 +1,139 @@
+{
+  "id": "aicsErrorHandler",
+  "name": "Error - AI Support Global Handler",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Global Error Workflow\n\nAssigned as `errorWorkflow` on all production flows.\n\n1. Capture failed execution metadata\n2. Notify Slack `#support-alerts`\n3. Persist error log in Supabase",
+        "height": 240,
+        "width": 420,
+        "color": 3
+      },
+      "id": "5e4833cb-28ed-47c2-b0a4-524f80e51ff1",
+      "name": "Docs \u00b7 Error Handler",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -40
+      ]
+    },
+    {
+      "id": "af70b7d7-3263-4c84-9248-9d2bdb2310ba",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "6f838710-d5e9-4e11-a37f-99ca32855a98",
+      "name": "Format Error Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        200
+      ],
+      "parameters": {
+        "jsCode": "const e = $input.first().json;\nconst exec = e.execution || {};\nconst wf = e.workflow || {};\nreturn [{\n  json: {\n    ticket_id: exec.id ? `ERR-${exec.id}` : `ERR-${Date.now()}`,\n    customer_email: 'system@n8n.local',\n    category: 'General Inquiry',\n    confidence: 0,\n    status: 'error',\n    channel: 'manual',\n    event_type: 'workflow_error',\n    level: 'error',\n    message: `Workflow failed: ${wf.name || 'unknown'} \u2014 ${exec.error?.message || e.message || 'unknown error'}`,\n    workflow_name: wf.name || 'unknown',\n    execution_id: exec.id || $execution.id,\n    payload: {\n      lastNode: exec.lastNodeExecuted,\n      error: exec.error || e,\n    },\n    slack_text: `\ud83d\udea8 *AI Support workflow failed*\\n\u2022 Workflow: *${wf.name || 'unknown'}*\\n\u2022 Execution: \\`${exec.id || 'n/a'}\\`\\n\u2022 Node: \\`${exec.lastNodeExecuted || 'n/a'}\\`\\n\u2022 Error: ${exec.error?.message || e.message || 'unknown'}`,\n  }\n}];"
+      }
+    },
+    {
+      "id": "deea18cd-bd94-4f4a-883b-f505be6f13f0",
+      "name": "Slack \u00b7 Alert On-Call",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        80
+      ],
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{$vars.SLACK_ALERT_CHANNEL || 'support-alerts'}}"
+        },
+        "text": "={{$json.slack_text}}",
+        "otherOptions": {}
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "credSlackApi",
+          "name": "Slack Bot Credential"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "continueOnFail": true
+    },
+    {
+      "id": "c891a576-47e2-48e2-a196-8e33731498a4",
+      "name": "Call \u00b7 Log to Supabase",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        300
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsLogSupabase2"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Error Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Error Context": {
+      "main": [
+        [
+          {
+            "node": "Slack \u00b7 Alert On-Call",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call \u00b7 Log to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "UTC"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "local-portfolio-n8n"
+  },
+  "versionId": "e5ba0dec-5e51-448d-8dbe-ccbbf14ddf2d",
+  "pinData": {}
+}

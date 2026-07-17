@@ -7,6 +7,15 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 const automations = [
   {
+    title: 'AI Customer Support Automation',
+    description:
+      'Gmail/webhook intake, OpenAI classification, Airtable tickets, 90% confidence auto-replies, Slack human approval, and Supabase logging.',
+    image: '/images/automation-ai-customer-support.png',
+    alt: 'n8n AI customer support workflow with Gmail, classification, Airtable, Slack approval, and logging',
+    icon: Bot,
+    tags: ['n8n', 'OpenAI', 'Airtable + Slack'],
+  },
+  {
     title: 'n8n API Automation',
     description:
       'Connect external APIs, reshape incoming data, and move results through reliable low-code workflows.',

@@ -1,0 +1,26 @@
+{
+  "project": "AI Customer Support Automation",
+  "n8n_project_id": "zKWuALHErl8nOjxH",
+  "owner_user_id": "45813284-7302-41f1-9959-567e981d422c",
+  "workflow_ids": {
+    "classify": "aicsClassifySub1",
+    "logger": "aicsLogSupabase2",
+    "error": "aicsErrorHandler",
+    "email": "aicsMainEmailWf",
+    "webhook": "aicsWebhookFlow",
+    "manual": "aicsManualTestW"
+  },
+  "import_order": [
+    "01-sub-ai-classify-and-draft.json",
+    "02-sub-log-to-supabase.json",
+    "03-error-ai-support-global-handler.json",
+    "04-main-email-ai-customer-support.json",
+    "05-main-webhook-ai-customer-support.json",
+    "06-test-manual-ai-support-qa.json"
+  ],
+  "supabase_url": "https://ltwohsvgafjtxdgypmyh.supabase.co",
+  "tables": [
+    "support_tickets",
+    "support_execution_logs"
+  ]
+}

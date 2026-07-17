@@ -1,0 +1,415 @@
+{
+  "id": "aicsClassifySub1",
+  "name": "Sub - AI Classify & Draft Response",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Reusable Subworkflow\n\n**Purpose:** Classify inbound support messages and draft a reply.\n\n**Input fields:** `ticket_id`, `customer_name`, `customer_email`, `subject`, `body`, `channel`\n\n**Output fields:** `category`, `confidence`, `ai_summary`, `ai_response`, `priority`\n\nUses `$vars.OPENAI_MODEL` and `$vars.CONFIDENCE_THRESHOLD`.",
+        "height": 320,
+        "width": 460,
+        "color": 4
+      },
+      "id": "1e67505c-3443-4e52-88cf-e1c07d151578",
+      "name": "Docs \u00b7 AI Classification Subworkflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -120
+      ]
+    },
+    {
+      "id": "990ff3b7-af1c-4472-bfef-013ecfac5f18",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -40,
+        200
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "notes": "Entry point for parent workflows (email / webhook / manual).",
+      "notesInFlow": true
+    },
+    {
+      "id": "e961e414-cd60-4f1f-8b01-df8cdc9246f9",
+      "name": "Validate Inbound Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        200
+      ],
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst required = ['customer_email', 'body'];\nfor (const key of required) {\n  if (!item[key] || String(item[key]).trim() === '') {\n    throw new Error(`Missing required field: ${key}`);\n  }\n}\nconst ticketId = item.ticket_id || `TKT-${Date.now()}`;\nreturn [{\n  json: {\n    ticket_id: ticketId,\n    customer_name: item.customer_name || 'Valued Customer',\n    customer_email: String(item.customer_email).trim().toLowerCase(),\n    subject: item.subject || '(no subject)',\n    body: String(item.body).slice(0, 12000),\n    channel: item.channel || 'email',\n    received_at: item.received_at || new Date().toISOString(),\n  }\n}];"
+      },
+      "notes": "Guards against empty payloads before spending OpenAI tokens.",
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 2
+    },
+    {
+      "id": "a0438ee4-6f70-483f-b12e-13d5099593ef",
+      "name": "Build Classification Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        200
+      ],
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7649e494-f20f-4696-8df5-8a9336e5131c",
+              "name": "system_prompt",
+              "value": "You are an expert customer support triage engine. Classify the email into exactly one category: Billing, Technical Support, Sales, Refund, General Inquiry. Return strict JSON with keys: category (string), confidence (number 0-100), priority (Low|Medium|High|Urgent), ai_summary (string <= 280 chars), reasoning (string).",
+              "type": "string"
+            },
+            {
+              "id": "fda52473-7423-418e-86a6-7bd0ebe3fd1c",
+              "name": "user_prompt",
+              "value": "=Ticket: {{$json.ticket_id}}\nFrom: {{$json.customer_name}} <{{$json.customer_email}}>\nSubject: {{$json.subject}}\n\nBody:\n{{$json.body}}",
+              "type": "string"
+            },
+            {
+              "id": "26a19e55-e155-4eaa-8fae-b1f300ed6ee1",
+              "name": "ticket_id",
+              "value": "={{$json.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "b1e0f243-cd43-4606-839c-b19f2e8eae37",
+              "name": "customer_name",
+              "value": "={{$json.customer_name}}",
+              "type": "string"
+            },
+            {
+              "id": "83abbfaa-e684-41d8-90bd-360a534d9813",
+              "name": "customer_email",
+              "value": "={{$json.customer_email}}",
+              "type": "string"
+            },
+            {
+              "id": "90d3592d-870e-4eb7-ad2f-47adf1e151e5",
+              "name": "subject",
+              "value": "={{$json.subject}}",
+              "type": "string"
+            },
+            {
+              "id": "cfcfc761-38f4-46a8-b1f4-b3eb1fe3cb4c",
+              "name": "body",
+              "value": "={{$json.body}}",
+              "type": "string"
+            },
+            {
+              "id": "27f62ac3-675f-4fc7-8eaa-1cbad0aa1e2f",
+              "name": "channel",
+              "value": "={{$json.channel}}",
+              "type": "string"
+            },
+            {
+              "id": "27bce127-853d-44c5-89e7-4918287c84bf",
+              "name": "received_at",
+              "value": "={{$json.received_at}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "338be809-530f-48ab-be5d-6f95caf75367",
+      "name": "OpenAI \u00b7 Classify Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({ model: $vars.OPENAI_MODEL || 'gpt-4o-mini', temperature: 0.1, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: $json.system_prompt }, { role: 'user', content: $json.user_prompt } ] })}}",
+        "options": {
+          "timeout": 60000,
+          "retry": {
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "credOpenAiHeader",
+          "name": "OpenAI API Header Auth"
+        }
+      },
+      "notes": "Header Auth value should be: Bearer <OPENAI_API_KEY>",
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "995e6202-9fc8-4aae-8ddd-4d77eb9e72c7",
+      "name": "Parse Classification JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        200
+      ],
+      "parameters": {
+        "jsCode": "const prev = $('Build Classification Prompt').first().json;\nconst raw = $input.first().json;\nconst content = raw?.choices?.[0]?.message?.content;\nif (!content) {\n  throw new Error('OpenAI classification returned empty content');\n}\nlet parsed;\ntry {\n  parsed = typeof content === 'string' ? JSON.parse(content) : content;\n} catch (e) {\n  throw new Error('Failed to parse classification JSON: ' + e.message);\n}\nconst allowed = ['Billing', 'Technical Support', 'Sales', 'Refund', 'General Inquiry'];\nlet category = parsed.category || 'General Inquiry';\nif (!allowed.includes(category)) category = 'General Inquiry';\nconst confidence = Math.max(0, Math.min(100, Number(parsed.confidence) || 0));\nreturn [{\n  json: {\n    ...prev,\n    category,\n    confidence,\n    priority: parsed.priority || 'Medium',\n    ai_summary: parsed.ai_summary || parsed.reasoning || 'No summary provided',\n    classification_reasoning: parsed.reasoning || '',\n  }\n}];"
+      }
+    },
+    {
+      "id": "d8870d15-0ad3-4d8e-bba5-36770f7d4414",
+      "name": "Build Reply Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1300,
+        200
+      ],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8573fdac-607d-46fb-aa00-9a6c2ecfcb3c",
+              "name": "reply_system",
+              "value": "You are a professional, empathetic customer support agent. Write a clear email reply. Never invent account balances, refund amounts, or policy exceptions. If information is missing, ask concise clarifying questions. Return strict JSON with keys: subject (string), body (string), confidence (number 0-100).",
+              "type": "string"
+            },
+            {
+              "id": "46bca30a-cc11-4c9f-a59e-77feecc5dd36",
+              "name": "reply_user",
+              "value": "=Brand: {{$vars.SUPPORT_BRAND_NAME || 'Customer Support'}}\nCategory: {{$json.category}}\nPriority: {{$json.priority}}\nCustomer: {{$json.customer_name}}\nOriginal subject: {{$json.subject}}\nSummary: {{$json.ai_summary}}\n\nOriginal message:\n{{$json.body}}\n\nWrite a helpful reply.",
+              "type": "string"
+            },
+            {
+              "id": "a54bf660-65b3-4e81-b5be-1c4fe5c31b90",
+              "name": "ticket_id",
+              "value": "={{$json.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "490a176f-9cc9-42e5-b28f-cb66f8c16ab0",
+              "name": "customer_name",
+              "value": "={{$json.customer_name}}",
+              "type": "string"
+            },
+            {
+              "id": "d48dc40e-f3d6-432c-871f-51ce8a5f6d5c",
+              "name": "customer_email",
+              "value": "={{$json.customer_email}}",
+              "type": "string"
+            },
+            {
+              "id": "ffe7ebe4-a354-43eb-8970-97bec309e676",
+              "name": "subject",
+              "value": "={{$json.subject}}",
+              "type": "string"
+            },
+            {
+              "id": "60f88c2b-4eff-4984-a5f3-f54fe99ad1a3",
+              "name": "body",
+              "value": "={{$json.body}}",
+              "type": "string"
+            },
+            {
+              "id": "84e2dbcc-c630-4759-a435-c18e392ffcb1",
+              "name": "channel",
+              "value": "={{$json.channel}}",
+              "type": "string"
+            },
+            {
+              "id": "6be510ef-a0d1-42af-85c4-bb7938998b3d",
+              "name": "received_at",
+              "value": "={{$json.received_at}}",
+              "type": "string"
+            },
+            {
+              "id": "99ad8138-5a91-4a99-b611-cc45118ed4c5",
+              "name": "category",
+              "value": "={{$json.category}}",
+              "type": "string"
+            },
+            {
+              "id": "f94acc2d-d025-4972-bfaa-bdd6e716b0b9",
+              "name": "confidence",
+              "value": "={{$json.confidence}}",
+              "type": "number"
+            },
+            {
+              "id": "d4c6a3a8-8497-432e-b130-a80b59e0ec96",
+              "name": "priority",
+              "value": "={{$json.priority}}",
+              "type": "string"
+            },
+            {
+              "id": "528c2b83-b7fd-4560-98ed-b962cabe6cf7",
+              "name": "ai_summary",
+              "value": "={{$json.ai_summary}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "ae685488-be32-4c73-b630-3eed66566823",
+      "name": "OpenAI \u00b7 Generate Reply Draft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({ model: $vars.OPENAI_MODEL || 'gpt-4o-mini', temperature: 0.4, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: $json.reply_system }, { role: 'user', content: $json.reply_user } ] })}}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "credOpenAiHeader",
+          "name": "OpenAI API Header Auth"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "fc6c3235-a822-4af8-a6ea-41b28e0d07c9",
+      "name": "Assemble AI Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        200
+      ],
+      "parameters": {
+        "jsCode": "const base = $('Build Reply Prompt').first().json;\nconst raw = $input.first().json;\nconst content = raw?.choices?.[0]?.message?.content;\nif (!content) throw new Error('OpenAI reply draft returned empty content');\nconst parsed = typeof content === 'string' ? JSON.parse(content) : content;\nconst replyConfidence = Math.max(0, Math.min(100, Number(parsed.confidence) || Number(base.confidence) || 0));\nconst finalConfidence = Math.round((Number(base.confidence) + replyConfidence) / 2);\nconst threshold = Number($vars.CONFIDENCE_THRESHOLD || 90);\nreturn [{\n  json: {\n    ticket_id: base.ticket_id,\n    customer_name: base.customer_name,\n    customer_email: base.customer_email,\n    subject: base.subject,\n    body: base.body,\n    channel: base.channel,\n    received_at: base.received_at,\n    category: base.category,\n    priority: base.priority,\n    ai_summary: base.ai_summary,\n    ai_response_subject: parsed.subject || `Re: ${base.subject}`,\n    ai_response: parsed.body || '',\n    confidence: finalConfidence,\n    classification_confidence: Number(base.confidence),\n    reply_confidence: replyConfidence,\n    confidence_threshold: threshold,\n    auto_reply_eligible: finalConfidence >= threshold,\n    status: finalConfidence >= threshold ? 'classified_auto' : 'classified_review',\n  }\n}];"
+      },
+      "notes": "Averages classification + reply confidence; compares to $vars.CONFIDENCE_THRESHOLD.",
+      "notesInFlow": true
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate Inbound Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Inbound Payload": {
+      "main": [
+        [
+          {
+            "node": "Build Classification Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Classification Prompt": {
+      "main": [
+        [
+          {
+            "node": "OpenAI \u00b7 Classify Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI \u00b7 Classify Message": {
+      "main": [
+        [
+          {
+            "node": "Parse Classification JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Classification JSON": {
+      "main": [
+        [
+          {
+            "node": "Build Reply Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Reply Prompt": {
+      "main": [
+        [
+          {
+            "node": "OpenAI \u00b7 Generate Reply Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI \u00b7 Generate Reply Draft": {
+      "main": [
+        [
+          {
+            "node": "Assemble AI Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "aicsErrorHandler",
+    "timezone": "UTC",
+    "executionTimeout": 900
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "local-portfolio-n8n"
+  },
+  "versionId": "1c2be1fb-1e36-4705-90e9-cd66bebdbed8",
+  "pinData": {}
+}

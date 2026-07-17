@@ -1,0 +1,301 @@
+{
+  "id": "aicsManualTestW",
+  "name": "Test - Manual AI Support QA",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Manual Testing Workflow\n\nUse pinned/test fixtures to validate:\n1. High-confidence auto-reply path\n2. Low-confidence human approval path\n3. Logger subworkflow\n\nToggle `force_low_confidence` in the fixture Set node.",
+        "height": 280,
+        "width": 460,
+        "color": 2
+      },
+      "id": "c0822704-d16a-4c3a-81da-a1605a6684ae",
+      "name": "Docs \u00b7 Manual QA Harness",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -20
+      ]
+    },
+    {
+      "id": "abbe7469-c687-4766-b2d3-9385254da205",
+      "name": "Manual Trigger \u00b7 Run Test Suite",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        220
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "08a7a5c9-fc09-4724-beb6-ade0e88cca80",
+      "name": "Load Test Fixture",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        220
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "14aaace8-eb63-41b4-9032-6581f3eba3d6",
+              "name": "ticket_id",
+              "value": "={{'TKT-TEST-' + Date.now()}}",
+              "type": "string"
+            },
+            {
+              "id": "c30e6ad2-c82a-42d0-a5d8-692f5229655e",
+              "name": "customer_name",
+              "value": "Jordan Lee",
+              "type": "string"
+            },
+            {
+              "id": "e7388eb8-b058-4b78-b467-a7b4f5b653bc",
+              "name": "customer_email",
+              "value": "jordan.lee@example.com",
+              "type": "string"
+            },
+            {
+              "id": "af39636c-8a4f-4735-ac2a-5849c7a7a97a",
+              "name": "subject",
+              "value": "I was charged twice for my subscription",
+              "type": "string"
+            },
+            {
+              "id": "f4768177-2a2f-451b-9aa1-77eadeb07460",
+              "name": "body",
+              "value": "Hi support, I was billed twice on July 1 for my Pro plan ($49). Transaction IDs: ch_123 and ch_456. Please refund the duplicate charge. Account email is jordan.lee@example.com.",
+              "type": "string"
+            },
+            {
+              "id": "0b2a4f01-fe2e-4ce0-a55a-107c7f239bdd",
+              "name": "channel",
+              "value": "manual",
+              "type": "string"
+            },
+            {
+              "id": "a88f233b-195d-4d27-80c8-eda0fc873486",
+              "name": "received_at",
+              "value": "={{$now.toISO()}}",
+              "type": "string"
+            },
+            {
+              "id": "52cbde9c-6a19-4aee-b5f2-19ce5db1aea8",
+              "name": "force_low_confidence",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "Swap fixture values or set force_low_confidence=true to exercise Slack approval.",
+      "notesInFlow": true
+    },
+    {
+      "id": "448072bf-236b-4ddc-8f3c-7f0ee26b85ae",
+      "name": "Call \u00b7 AI Classify & Draft",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        520,
+        220
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsClassifySub1"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "b854e692-cf1e-4271-92d2-e936925a1f2a",
+      "name": "Apply Test Confidence Override",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const fixture = $('Load Test Fixture').first().json;\nconst ai = $input.first().json;\nconst forceLow = Boolean(fixture.force_low_confidence);\nconst confidence = forceLow ? 72 : ai.confidence;\nconst threshold = Number(ai.confidence_threshold || 90);\nreturn [{\n  json: {\n    ...ai,\n    confidence,\n    auto_reply_eligible: confidence >= threshold,\n    status: confidence >= threshold ? 'classified_auto' : 'classified_review',\n    test_mode: true,\n    force_low_confidence: forceLow,\n    event_type: 'manual_test',\n    message: `Manual test completed for ${ai.ticket_id}`,\n  }\n}];"
+      }
+    },
+    {
+      "id": "469c503f-1649-4761-ad8c-3550e2120004",
+      "name": "Call \u00b7 Log Test Result",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1080,
+        220
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsLogSupabase2"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "6562b750-df9a-4277-afa8-a8bbc4964fc1",
+      "name": "QA Summary Output",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        220
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10549a04-f9d3-499a-bfba-3f692f88f806",
+              "name": "ticket_id",
+              "value": "={{$('Apply Test Confidence Override').item.json.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "d9cc34b4-5405-45c5-91cd-328beebbb763",
+              "name": "category",
+              "value": "={{$('Apply Test Confidence Override').item.json.category}}",
+              "type": "string"
+            },
+            {
+              "id": "268ccf22-9d7b-4c4a-85a4-a5babfba4097",
+              "name": "confidence",
+              "value": "={{$('Apply Test Confidence Override').item.json.confidence}}",
+              "type": "number"
+            },
+            {
+              "id": "e46ef34c-6e04-4fe1-bb18-f2983473c948",
+              "name": "auto_reply_eligible",
+              "value": "={{$('Apply Test Confidence Override').item.json.auto_reply_eligible}}",
+              "type": "boolean"
+            },
+            {
+              "id": "36636592-4087-4f90-84b6-a930a38dcccb",
+              "name": "ai_summary",
+              "value": "={{$('Apply Test Confidence Override').item.json.ai_summary}}",
+              "type": "string"
+            },
+            {
+              "id": "462424e0-ca41-4196-9180-c63cc11eebc3",
+              "name": "ai_response",
+              "value": "={{$('Apply Test Confidence Override').item.json.ai_response}}",
+              "type": "string"
+            },
+            {
+              "id": "4f6fd5f1-6cc8-4dcd-9530-7e0e5c6b224e",
+              "name": "qa_passed",
+              "value": "={{Boolean($('Apply Test Confidence Override').item.json.category && $('Apply Test Confidence Override').item.json.ai_response)}}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger \u00b7 Run Test Suite": {
+      "main": [
+        [
+          {
+            "node": "Load Test Fixture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Test Fixture": {
+      "main": [
+        [
+          {
+            "node": "Call \u00b7 AI Classify & Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call \u00b7 AI Classify & Draft": {
+      "main": [
+        [
+          {
+            "node": "Apply Test Confidence Override",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Test Confidence Override": {
+      "main": [
+        [
+          {
+            "node": "Call \u00b7 Log Test Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call \u00b7 Log Test Result": {
+      "main": [
+        [
+          {
+            "node": "QA Summary Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "aicsErrorHandler",
+    "timezone": "UTC",
+    "executionTimeout": 900
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "local-portfolio-n8n"
+  },
+  "versionId": "a65e4440-0ff8-450d-a2f0-13a42818a62e",
+  "pinData": {
+    "Load Test Fixture": [
+      {
+        "json": {
+          "ticket_id": "TKT-TEST-PINNED-001",
+          "customer_name": "Jordan Lee",
+          "customer_email": "jordan.lee@example.com",
+          "subject": "I was charged twice for my subscription",
+          "body": "Hi support, I was billed twice on July 1 for my Pro plan ($49). Please refund the duplicate charge.",
+          "channel": "manual",
+          "force_low_confidence": false
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "customer_name": "Jordan Lee",
+  "customer_email": "jordan.lee@example.com",
+  "subject": "I was charged twice for my subscription",
+  "body": "Hi support, I was billed twice on July 1 for my Pro plan ($49). Transaction IDs: ch_123 and ch_456. Please refund the duplicate charge."
+}

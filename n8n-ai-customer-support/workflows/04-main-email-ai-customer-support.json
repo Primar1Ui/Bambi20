@@ -1,0 +1,1208 @@
+{
+  "id": "aicsMainEmailWf",
+  "name": "Main - Email AI Customer Support",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## AI Customer Support \u2014 Email\n\n**Trigger:** Gmail (UNREAD inbox)\n\n**Flow:** Classify \u2192 Airtable \u2192 Auto-reply (\u226590%) OR Slack approval \u2192 Final email \u2192 Supabase logs\n\n**Error workflow:** `Error \u00b7 AI Support Global Handler`\n**Retries:** enabled on OpenAI, Airtable, Gmail, Slack",
+        "height": 320,
+        "width": 480,
+        "color": 5
+      },
+      "id": "293c9749-65cb-4c48-910e-d264e3f55d8b",
+      "name": "Docs \u00b7 Email Production Flow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Confidence Gate\n\n`confidence >= $vars.CONFIDENCE_THRESHOLD` (default **90**)\n\nTRUE \u2192 automatic Gmail reply\\nFALSE \u2192 Slack assign + Wait webhook",
+        "height": 200,
+        "width": 360,
+        "color": 7
+      },
+      "id": "55580bbe-808e-4b6e-9318-b3356ba6b5f4",
+      "name": "Docs \u00b7 Confidence Gate",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        -40
+      ]
+    },
+    {
+      "id": "bee44381-c5ca-4f12-8b62-fad1ee2cd4bc",
+      "name": "Gmail Trigger \u00b7 New Support Email",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        240
+      ],
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "readStatus": "unread",
+          "q": "={{$vars.GMAIL_SEARCH_QUERY || 'label:inbox -category:promotions -category:social'}}"
+        },
+        "options": {
+          "downloadAttachments": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "credGmail",
+          "name": "Gmail OAuth2 Support Inbox"
+        }
+      },
+      "notes": "Polls unread inbox emails every minute.",
+      "notesInFlow": true
+    },
+    {
+      "id": "8cba5a53-ae37-47b4-80d1-3b622a5db730",
+      "name": "Normalize Gmail Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        240
+      ],
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst headers = j.headers || {};\nconst fromRaw = j.from?.value?.[0] || {};\nconst email = (fromRaw.address || j.from || '').toString();\nconst name = fromRaw.name || email.split('@')[0] || 'Customer';\nconst subject = j.subject || '(no subject)';\nconst body = j.text || j.snippet || j.textPlain || '';\nif (!email) throw new Error('Gmail message missing sender email');\nreturn [{\n  json: {\n    ticket_id: `TKT-EM-${j.id || Date.now()}`,\n    customer_name: name,\n    customer_email: email.toLowerCase(),\n    subject,\n    body: String(body).slice(0, 12000),\n    channel: 'email',\n    received_at: j.date || new Date().toISOString(),\n    gmail_message_id: j.id,\n    gmail_thread_id: j.threadId,\n  }\n}];"
+      }
+    },
+    {
+      "id": "d326fa8b-590b-464f-aaa4-b0c1f023ecae",
+      "name": "Call \u00b7 AI Classify & Draft",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        520,
+        240
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsClassifySub1"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "notes": "Reusable AI subworkflow \u2014 classification + draft reply.",
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 2
+    },
+    {
+      "id": "557cd600-2641-4c8a-860a-4d2a205e3822",
+      "name": "Airtable \u00b7 Upsert Support Ticket",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        240
+      ],
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$vars.AIRTABLE_BASE_ID}}"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{$vars.AIRTABLE_TABLE_NAME || 'Support Tickets'}}"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ticket ID": "={{$json.ticket_id}}",
+            "Customer Name": "={{$json.customer_name}}",
+            "Customer Email": "={{$json.customer_email}}",
+            "Subject": "={{$json.subject}}",
+            "Category": "={{$json.category}}",
+            "Confidence": "={{$json.confidence}}",
+            "Priority": "={{$json.priority}}",
+            "Status": "={{$json.auto_reply_eligible ? 'Auto Reply Pending' : 'Needs Human Review'}}",
+            "AI Summary": "={{$json.ai_summary}}",
+            "AI Draft": "={{$json.ai_response}}",
+            "Channel": "={{$json.channel}}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "credAirtable",
+          "name": "Airtable Personal Access Token"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "913da7ea-910c-47f4-8c6e-281cd09dd380",
+      "name": "Attach Airtable Record ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1060,
+        240
+      ],
+      "parameters": {
+        "includeOtherFields": true,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0720eb73-d971-43eb-9711-d6ad3e402e93",
+              "name": "airtable_record_id",
+              "value": "={{$json.id || $json.records?.[0]?.id || $json.id}}",
+              "type": "string"
+            },
+            {
+              "id": "cc785dd1-98bf-4eeb-85e4-a140f10370e6",
+              "name": "status",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.auto_reply_eligible ? 'classified' : 'pending_approval'}}",
+              "type": "string"
+            },
+            {
+              "id": "06ef6ce0-0b63-41b5-a4a2-9419b4901a5b",
+              "name": "event_type",
+              "value": "ticket_created",
+              "type": "string"
+            },
+            {
+              "id": "b205b84b-528f-4c93-b0d5-e263e2632a49",
+              "name": "message",
+              "value": "=Ticket {{$('Call \u00b7 AI Classify & Draft').item.json.ticket_id}} stored in Airtable",
+              "type": "string"
+            },
+            {
+              "id": "d8315400-d43f-4717-b9d2-f08682d96b99",
+              "name": "ai_response",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.ai_response}}",
+              "type": "string"
+            },
+            {
+              "id": "b274188b-4345-437e-ada9-e7d698bf330d",
+              "name": "ticket_id",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "b044af26-b89b-4906-aac9-7f9780eb0363",
+              "name": "customer_name",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.customer_name}}",
+              "type": "string"
+            },
+            {
+              "id": "a4d0e82e-fd0e-405b-972a-83ee02ddbbe9",
+              "name": "customer_email",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.customer_email}}",
+              "type": "string"
+            },
+            {
+              "id": "4c65ea28-89ee-48c2-9b29-d374c255d631",
+              "name": "subject",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.subject}}",
+              "type": "string"
+            },
+            {
+              "id": "0508e0db-169c-4950-97b6-5d26b77d5262",
+              "name": "category",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.category}}",
+              "type": "string"
+            },
+            {
+              "id": "af91c0b2-feab-44de-9cdf-b0c4e5d73227",
+              "name": "confidence",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.confidence}}",
+              "type": "number"
+            },
+            {
+              "id": "39043250-17ab-41ca-ab3c-f7a4040bcc86",
+              "name": "priority",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.priority}}",
+              "type": "string"
+            },
+            {
+              "id": "eb7428b8-bc98-403f-8cdb-0d70034fc9b5",
+              "name": "ai_summary",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.ai_summary}}",
+              "type": "string"
+            },
+            {
+              "id": "ca8284c0-6699-4389-9c9d-db5049654c3c",
+              "name": "ai_response_subject",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.ai_response_subject}}",
+              "type": "string"
+            },
+            {
+              "id": "b1f8be90-789c-4b39-a67b-259e1da0c53c",
+              "name": "channel",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.channel}}",
+              "type": "string"
+            },
+            {
+              "id": "217407a4-8217-429e-9c53-8eae853bf078",
+              "name": "auto_reply_eligible",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.auto_reply_eligible}}",
+              "type": "boolean"
+            },
+            {
+              "id": "0b9a5e4d-bcde-43d5-8554-d1b4d34e1e47",
+              "name": "confidence_threshold",
+              "value": "={{$('Call \u00b7 AI Classify & Draft').item.json.confidence_threshold}}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "318df2d9-63d2-4314-a35e-7e32058fd5c6",
+      "name": "Call \u00b7 Log Ticket Created",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1320,
+        240
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsLogSupabase2"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "36cf636d-e4c0-4152-823b-f2e75d0e8b5c",
+      "name": "IF \u00b7 Confidence \u2265 Threshold",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        240
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "11d5fbbf-ad40-497b-8645-279172dd83c5",
+              "leftValue": "={{$('Attach Airtable Record ID').item.json.confidence}}",
+              "rightValue": "={{$('Attach Airtable Record ID').item.json.confidence_threshold}}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "notes": "Default threshold is 90 via $vars.CONFIDENCE_THRESHOLD.",
+      "notesInFlow": true
+    },
+    {
+      "id": "1a2c4449-3967-4f23-9703-a334f21b7188",
+      "name": "Gmail \u00b7 Send Auto Reply",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1900,
+        60
+      ],
+      "parameters": {
+        "operation": "send",
+        "sendTo": "={{$('Attach Airtable Record ID').item.json.customer_email}}",
+        "subject": "={{$('Attach Airtable Record ID').item.json.ai_response_subject}}",
+        "emailType": "text",
+        "message": "={{$('Attach Airtable Record ID').item.json.ai_response}}\\n\\n---\\nTicket: {{$('Attach Airtable Record ID').item.json.ticket_id}}\\nCategory: {{$('Attach Airtable Record ID').item.json.category}}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "credGmail",
+          "name": "Gmail OAuth2 Support Inbox"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "id": "7b2193d6-cd28-4f29-a1f1-3be497fd3106",
+      "name": "Airtable \u00b7 Mark Auto Replied",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2180,
+        60
+      ],
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$vars.AIRTABLE_BASE_ID}}"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{$vars.AIRTABLE_TABLE_NAME || 'Support Tickets'}}"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{$('Attach Airtable Record ID').item.json.airtable_record_id}}",
+            "Status": "Auto Replied",
+            "Final Response": "={{$('Attach Airtable Record ID').item.json.ai_response}}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "credAirtable",
+          "name": "Airtable Personal Access Token"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "id": "c2fbd546-e0e9-414d-9fd3-b01d93035e97",
+      "name": "Prepare Auto Reply Log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2460,
+        60
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "58b3c7a4-edef-4f36-8034-d16b5e46ea2f",
+              "name": "ticket_id",
+              "value": "={{$('Attach Airtable Record ID').item.json.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "35f3f74a-4af3-4279-853d-8b8344ca72b2",
+              "name": "customer_name",
+              "value": "={{$('Attach Airtable Record ID').item.json.customer_name}}",
+              "type": "string"
+            },
+            {
+              "id": "4c8160db-c7fd-4088-837f-e189edd38f15",
+              "name": "customer_email",
+              "value": "={{$('Attach Airtable Record ID').item.json.customer_email}}",
+              "type": "string"
+            },
+            {
+              "id": "5149f8c3-90e8-4e0b-9c3a-c106ef29592f",
+              "name": "subject",
+              "value": "={{$('Attach Airtable Record ID').item.json.subject}}",
+              "type": "string"
+            },
+            {
+              "id": "da0a6f4d-17f0-40b0-9760-0f8d1ae1160a",
+              "name": "category",
+              "value": "={{$('Attach Airtable Record ID').item.json.category}}",
+              "type": "string"
+            },
+            {
+              "id": "244407bf-5624-4c61-b7ca-358255f3afc7",
+              "name": "confidence",
+              "value": "={{$('Attach Airtable Record ID').item.json.confidence}}",
+              "type": "number"
+            },
+            {
+              "id": "f81d8386-9bd2-4022-b481-8f60244f7b40",
+              "name": "channel",
+              "value": "={{$('Attach Airtable Record ID').item.json.channel}}",
+              "type": "string"
+            },
+            {
+              "id": "e48c8962-6490-4e35-98b9-ac7375cb9b6f",
+              "name": "airtable_record_id",
+              "value": "={{$('Attach Airtable Record ID').item.json.airtable_record_id}}",
+              "type": "string"
+            },
+            {
+              "id": "2021f15c-7e7a-45e6-a26f-b34419215c6e",
+              "name": "ai_summary",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_summary}}",
+              "type": "string"
+            },
+            {
+              "id": "a434e400-a3cf-473c-91b5-9de4fdaeb0ff",
+              "name": "ai_response",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_response}}",
+              "type": "string"
+            },
+            {
+              "id": "b1907132-af59-4f45-9b33-036ebace2047",
+              "name": "final_response",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_response}}",
+              "type": "string"
+            },
+            {
+              "id": "6090fede-11ce-424a-996e-b8e7a3863f63",
+              "name": "human_approved",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "92757fac-174b-428c-945d-57a21e03b75a",
+              "name": "status",
+              "value": "auto_replied",
+              "type": "string"
+            },
+            {
+              "id": "4476b4ea-a432-49a4-ae2c-d829d7584338",
+              "name": "event_type",
+              "value": "auto_replied",
+              "type": "string"
+            },
+            {
+              "id": "6aec97be-8129-4e9b-9b6e-1b9655e5bf45",
+              "name": "message",
+              "value": "=Auto-replied to {{$('Attach Airtable Record ID').item.json.customer_email}}",
+              "type": "string"
+            },
+            {
+              "id": "a87471fd-0491-4c13-a84a-031a04c18d70",
+              "name": "level",
+              "value": "info",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "6b096741-9d2f-4cf2-8e61-8631b1195119",
+      "name": "Call \u00b7 Log Auto Reply",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2740,
+        60
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsLogSupabase2"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "bc583f92-bde3-46b8-a83b-3ac0aee275df",
+      "name": "Slack \u00b7 Request Human Approval",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1900,
+        420
+      ],
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{$vars.SLACK_SUPPORT_CHANNEL || 'customer-support'}}"
+        },
+        "text": "=:ticket: *Human review required*\\n\u2022 Ticket: `{{$('Attach Airtable Record ID').item.json.ticket_id}}`\\n\u2022 Customer: {{$('Attach Airtable Record ID').item.json.customer_name}} <{{$('Attach Airtable Record ID').item.json.customer_email}}>\\n\u2022 Category: *{{$('Attach Airtable Record ID').item.json.category}}*\\n\u2022 Confidence: *{{$('Attach Airtable Record ID').item.json.confidence}}%* (threshold {{$('Attach Airtable Record ID').item.json.confidence_threshold}}%)\\n\u2022 Priority: {{$('Attach Airtable Record ID').item.json.priority}}\\n\u2022 Summary: {{$('Attach Airtable Record ID').item.json.ai_summary}}\\n\\n*Draft reply:*\\n>>> {{$('Attach Airtable Record ID').item.json.ai_response}}\\n\\nApprove: {{$execution.resumeUrl}}?decision=approve\\nReject: {{$execution.resumeUrl}}?decision=reject",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "credSlackApi",
+          "name": "Slack Bot Credential"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2
+    },
+    {
+      "id": "930ab1db-afbb-46b1-8497-2d9558874095",
+      "name": "Wait \u00b7 Human Approval Webhook",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2180,
+        420
+      ],
+      "webhookId": "5f0996c1-a567-40cb-afb3-0b1cf0a8f0f8",
+      "parameters": {
+        "resume": "webhook",
+        "options": {
+          "httpMethod": "GET"
+        }
+      },
+      "notes": "Agent clicks Approve/Reject links from Slack to resume.",
+      "notesInFlow": true
+    },
+    {
+      "id": "3c0e2ca0-f317-4979-bdad-aaeeb4973463",
+      "name": "IF \u00b7 Approved By Human",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2460,
+        420
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "f408229f-9519-4d40-8324-9c4515cc239f",
+              "leftValue": "={{$json.query?.decision || $json.decision || 'reject'}}",
+              "rightValue": "approve",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "28a338ed-c1c7-4af3-814c-25c02b1b9cfb",
+      "name": "Gmail \u00b7 Send Approved Reply",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2740,
+        300
+      ],
+      "parameters": {
+        "operation": "send",
+        "sendTo": "={{$('Attach Airtable Record ID').item.json.customer_email}}",
+        "subject": "={{$('Attach Airtable Record ID').item.json.ai_response_subject}}",
+        "emailType": "text",
+        "message": "={{$('Attach Airtable Record ID').item.json.ai_response}}\\n\\n---\\nTicket: {{$('Attach Airtable Record ID').item.json.ticket_id}}\\nReviewed by support team",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "credGmail",
+          "name": "Gmail OAuth2 Support Inbox"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "id": "71970a9b-23b0-40c1-a5ec-2f46a9263a00",
+      "name": "Airtable \u00b7 Mark Human Replied",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3020,
+        300
+      ],
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$vars.AIRTABLE_BASE_ID}}"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{$vars.AIRTABLE_TABLE_NAME || 'Support Tickets'}}"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{$('Attach Airtable Record ID').item.json.airtable_record_id}}",
+            "Status": "Human Approved & Sent",
+            "Final Response": "={{$('Attach Airtable Record ID').item.json.ai_response}}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "credAirtable",
+          "name": "Airtable Personal Access Token"
+        }
+      }
+    },
+    {
+      "id": "da69a7ec-4ac7-443c-a74b-ac1e57395a2f",
+      "name": "Prepare Approved Log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3300,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a158c906-5be2-495e-8e51-ee5f48d803bc",
+              "name": "ticket_id",
+              "value": "={{$('Attach Airtable Record ID').item.json.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "b9714fbc-5f06-401a-8d89-ebeb4c6b4558",
+              "name": "customer_name",
+              "value": "={{$('Attach Airtable Record ID').item.json.customer_name}}",
+              "type": "string"
+            },
+            {
+              "id": "2884fe2e-3e58-41e0-b814-48f4eda61143",
+              "name": "customer_email",
+              "value": "={{$('Attach Airtable Record ID').item.json.customer_email}}",
+              "type": "string"
+            },
+            {
+              "id": "361cc83d-bce3-419a-b7a4-fe76354b1fbd",
+              "name": "subject",
+              "value": "={{$('Attach Airtable Record ID').item.json.subject}}",
+              "type": "string"
+            },
+            {
+              "id": "03393d5a-7a76-4224-af7a-9d007892c820",
+              "name": "category",
+              "value": "={{$('Attach Airtable Record ID').item.json.category}}",
+              "type": "string"
+            },
+            {
+              "id": "e3aadb42-b8a9-4b48-94c3-e0e001c41477",
+              "name": "confidence",
+              "value": "={{$('Attach Airtable Record ID').item.json.confidence}}",
+              "type": "number"
+            },
+            {
+              "id": "fec06a4c-b203-448c-be70-b2ec464ba0bf",
+              "name": "channel",
+              "value": "={{$('Attach Airtable Record ID').item.json.channel}}",
+              "type": "string"
+            },
+            {
+              "id": "04c22bdc-08f2-4dee-a029-a45f32ad9985",
+              "name": "airtable_record_id",
+              "value": "={{$('Attach Airtable Record ID').item.json.airtable_record_id}}",
+              "type": "string"
+            },
+            {
+              "id": "19568f9c-48f4-4cc4-9b4a-8d3621c24c58",
+              "name": "ai_summary",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_summary}}",
+              "type": "string"
+            },
+            {
+              "id": "0e617188-1c6d-4823-a699-7aca78ab8c70",
+              "name": "ai_response",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_response}}",
+              "type": "string"
+            },
+            {
+              "id": "4c605548-7a0f-4fa8-8eb2-d896546d4aab",
+              "name": "final_response",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_response}}",
+              "type": "string"
+            },
+            {
+              "id": "223e7c72-b33d-41e3-a1cc-dcd62f6bef24",
+              "name": "human_approved",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "53fba677-49d2-4c22-859d-29d53dcd91f3",
+              "name": "status",
+              "value": "replied",
+              "type": "string"
+            },
+            {
+              "id": "570ec5d1-d49c-499a-8832-f4f9b60405a2",
+              "name": "event_type",
+              "value": "human_approved_sent",
+              "type": "string"
+            },
+            {
+              "id": "03e4ea37-27db-42d2-aede-3cb16a7b6cb6",
+              "name": "message",
+              "value": "Human approved and sent final email",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c7d12c88-edba-4157-b207-5f80899a5709",
+      "name": "Call \u00b7 Log Approved Reply",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        3580,
+        300
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsLogSupabase2"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "6ebbc860-814b-4616-abd3-b8ce48b572c3",
+      "name": "Airtable \u00b7 Mark Rejected",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2740,
+        540
+      ],
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$vars.AIRTABLE_BASE_ID}}"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{$vars.AIRTABLE_TABLE_NAME || 'Support Tickets'}}"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{$('Attach Airtable Record ID').item.json.airtable_record_id}}",
+            "Status": "Rejected \u2014 Needs Rewrite"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "credAirtable",
+          "name": "Airtable Personal Access Token"
+        }
+      }
+    },
+    {
+      "id": "98cb4a69-5171-47aa-9a02-649cfc7e84b6",
+      "name": "Prepare Rejected Log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3020,
+        540
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7d0f316a-398e-4a3a-9cce-ddaefa445a21",
+              "name": "ticket_id",
+              "value": "={{$('Attach Airtable Record ID').item.json.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "128d65bc-3813-4e92-a1a9-3ea27804a037",
+              "name": "customer_email",
+              "value": "={{$('Attach Airtable Record ID').item.json.customer_email}}",
+              "type": "string"
+            },
+            {
+              "id": "6728e94b-ab48-4f4b-b078-8896ec5b2948",
+              "name": "category",
+              "value": "={{$('Attach Airtable Record ID').item.json.category}}",
+              "type": "string"
+            },
+            {
+              "id": "290df18c-64b7-45f5-957b-aaadda35aaf0",
+              "name": "confidence",
+              "value": "={{$('Attach Airtable Record ID').item.json.confidence}}",
+              "type": "number"
+            },
+            {
+              "id": "26796a25-4ad8-467e-afe7-12adde16550e",
+              "name": "channel",
+              "value": "={{$('Attach Airtable Record ID').item.json.channel}}",
+              "type": "string"
+            },
+            {
+              "id": "e7bcf2e5-a0a2-4b96-b2c6-83d09f53e147",
+              "name": "status",
+              "value": "pending_approval",
+              "type": "string"
+            },
+            {
+              "id": "42319a65-9609-4078-9c36-aa033067ab2c",
+              "name": "human_approved",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "af65b250-cb8e-4854-9a0e-c22513ca3599",
+              "name": "event_type",
+              "value": "human_rejected",
+              "type": "string"
+            },
+            {
+              "id": "5bea9c77-a839-486a-b9aa-40e5a5a2a879",
+              "name": "level",
+              "value": "warn",
+              "type": "string"
+            },
+            {
+              "id": "416630f7-6bbd-4b01-9b5e-d8757def113d",
+              "name": "message",
+              "value": "Human rejected AI draft \u2014 ticket left open for rewrite",
+              "type": "string"
+            },
+            {
+              "id": "4497ca07-2024-4fae-9b4c-5cd81ef608ab",
+              "name": "subject",
+              "value": "={{$('Attach Airtable Record ID').item.json.subject}}",
+              "type": "string"
+            },
+            {
+              "id": "2335e63e-c645-41f0-8760-a4f4c4ef97d6",
+              "name": "ai_summary",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_summary}}",
+              "type": "string"
+            },
+            {
+              "id": "d7e85572-ad01-4fda-940d-659ae9e5fb56",
+              "name": "ai_response",
+              "value": "={{$('Attach Airtable Record ID').item.json.ai_response}}",
+              "type": "string"
+            },
+            {
+              "id": "c583d486-9f9c-4800-8ff7-dd80fddceabc",
+              "name": "airtable_record_id",
+              "value": "={{$('Attach Airtable Record ID').item.json.airtable_record_id}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c253e483-6fd6-46a2-862b-bfb7cb825d3c",
+      "name": "Call \u00b7 Log Rejection",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        3300,
+        540
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "aicsLogSupabase2"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail Trigger \u00b7 New Support Email": {
+      "main": [
+        [
+          {
+            "node": "Normalize Gmail Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Gmail Payload": {
+      "main": [
+        [
+          {
+            "node": "Call \u00b7 AI Classify & Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call \u00b7 AI Classify & Draft": {
+      "main": [
+        [
+          {
+            "node": "Airtable \u00b7 Upsert Support Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable \u00b7 Upsert Support Ticket": {
+      "main": [
+        [
+          {
+            "node": "Attach Airtable Record ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Airtable Record ID": {
+      "main": [
+        [
+          {
+            "node": "Call \u00b7 Log Ticket Created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call \u00b7 Log Ticket Created": {
+      "main": [
+        [
+          {
+            "node": "IF \u00b7 Confidence \u2265 Threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF \u00b7 Confidence \u2265 Threshold": {
+      "main": [
+        [
+          {
+            "node": "Gmail \u00b7 Send Auto Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack \u00b7 Request Human Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail \u00b7 Send Auto Reply": {
+      "main": [
+        [
+          {
+            "node": "Airtable \u00b7 Mark Auto Replied",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable \u00b7 Mark Auto Replied": {
+      "main": [
+        [
+          {
+            "node": "Prepare Auto Reply Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Auto Reply Log": {
+      "main": [
+        [
+          {
+            "node": "Call \u00b7 Log Auto Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack \u00b7 Request Human Approval": {
+      "main": [
+        [
+          {
+            "node": "Wait \u00b7 Human Approval Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait \u00b7 Human Approval Webhook": {
+      "main": [
+        [
+          {
+            "node": "IF \u00b7 Approved By Human",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF \u00b7 Approved By Human": {
+      "main": [
+        [
+          {
+            "node": "Gmail \u00b7 Send Approved Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable \u00b7 Mark Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail \u00b7 Send Approved Reply": {
+      "main": [
+        [
+          {
+            "node": "Airtable \u00b7 Mark Human Replied",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable \u00b7 Mark Human Replied": {
+      "main": [
+        [
+          {
+            "node": "Prepare Approved Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Approved Log": {
+      "main": [
+        [
+          {
+            "node": "Call \u00b7 Log Approved Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable \u00b7 Mark Rejected": {
+      "main": [
+        [
+          {
+            "node": "Prepare Rejected Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Rejected Log": {
+      "main": [
+        [
+          {
+            "node": "Call \u00b7 Log Rejection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "aicsErrorHandler",
+    "timezone": "UTC",
+    "executionTimeout": 900
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "local-portfolio-n8n"
+  },
+  "versionId": "3db66e5d-f01c-4271-8233-cb34380b57a0",
+  "pinData": {}
+}

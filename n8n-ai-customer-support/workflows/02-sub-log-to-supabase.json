@@ -1,0 +1,280 @@
+{
+  "id": "aicsLogSupabase2",
+  "name": "Sub - Log to Supabase",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Logging Subworkflow\n\nWrites ticket snapshots + execution events to Supabase tables:\n- `support_tickets`\n- `support_execution_logs`\n\nAuth: Header Auth with `apikey` + `Authorization: Bearer <service_role>`.",
+        "height": 260,
+        "width": 440,
+        "color": 6
+      },
+      "id": "13c37faf-568c-4292-a189-162cf0bdfced",
+      "name": "Docs \u00b7 Supabase Logger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -80
+      ]
+    },
+    {
+      "id": "a2d73d04-6782-460d-a36d-2e78b11458f0",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        180
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    },
+    {
+      "id": "ecf34699-2988-45f6-b8a3-c1ff3ab2fbc8",
+      "name": "Normalize Log Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        180
+      ],
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst ticketId = j.ticket_id || `TKT-${Date.now()}`;\nconst eventType = j.event_type || 'ticket_upsert';\nconst level = j.level || 'info';\nconst message = j.message || `Support event ${eventType}`;\nconst supabaseUrl = ($vars.SUPABASE_URL || '').replace(/\\/$/, '');\nif (!supabaseUrl) {\n  throw new Error('Missing $vars.SUPABASE_URL');\n}\nreturn [{\n  json: {\n    supabase_url: supabaseUrl,\n    ticket: {\n      ticket_id: ticketId,\n      customer_name: j.customer_name || null,\n      customer_email: j.customer_email || 'unknown@example.com',\n      subject: j.subject || null,\n      category: j.category || 'General Inquiry',\n      confidence: Number(j.confidence || 0),\n      status: j.status || 'received',\n      channel: j.channel || 'email',\n      airtable_record_id: j.airtable_record_id || null,\n      slack_thread_ts: j.slack_thread_ts || null,\n      ai_summary: j.ai_summary || null,\n      ai_response: j.ai_response || null,\n      human_approved: Boolean(j.human_approved),\n      final_response: j.final_response || null,\n      metadata: j.metadata || {},\n      updated_at: new Date().toISOString(),\n    },\n    log: {\n      ticket_id: ticketId,\n      workflow_name: j.workflow_name || $workflow.name,\n      execution_id: j.execution_id || $execution.id,\n      event_type: eventType,\n      level,\n      message,\n      payload: j.payload || j,\n    }\n  }\n}];"
+      }
+    },
+    {
+      "id": "c8669fd1-cf2d-418a-80d9-412d1b1c6216",
+      "name": "Supabase \u00b7 Upsert Ticket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json.supabase_url}}/rest/v1/support_tickets?on_conflict=ticket_id",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$vars.SUPABASE_SERVICE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$vars.SUPABASE_SERVICE_KEY}}"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=representation"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json.ticket)}}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "credSupabaseHeader",
+          "name": "Supabase Service Role Header"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1500,
+      "notes": "Credential can be a dummy header; real key comes from $vars.SUPABASE_SERVICE_KEY.",
+      "notesInFlow": true
+    },
+    {
+      "id": "4a9a25b0-e0fc-43e1-9876-f004fc15b6ea",
+      "name": "Supabase \u00b7 Insert Execution Log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{$('Normalize Log Payload').item.json.supabase_url}}/rest/v1/support_execution_logs",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$vars.SUPABASE_SERVICE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$vars.SUPABASE_SERVICE_KEY}}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($('Normalize Log Payload').item.json.log)}}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "credSupabaseHeader",
+          "name": "Supabase Service Role Header"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "id": "3d09aabc-858e-4955-b083-8b447962e91b",
+      "name": "Merge Log Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        820,
+        180
+      ],
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      }
+    },
+    {
+      "id": "76bcf2c9-3e25-4fb0-b570-8f1ae5ec1bf5",
+      "name": "Return Logging Status",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        180
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fc6957a-605c-452d-bcff-003d43e810aa",
+              "name": "logged",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "e2997a03-acdf-43f5-bc46-a76d1413f80b",
+              "name": "ticket_id",
+              "value": "={{$('Normalize Log Payload').item.json.ticket.ticket_id}}",
+              "type": "string"
+            },
+            {
+              "id": "814261cc-ee33-4891-89a4-e2f92e0c6710",
+              "name": "event_type",
+              "value": "={{$('Normalize Log Payload').item.json.log.event_type}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Normalize Log Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Log Payload": {
+      "main": [
+        [
+          {
+            "node": "Supabase \u00b7 Upsert Ticket",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase \u00b7 Insert Execution Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase \u00b7 Upsert Ticket": {
+      "main": [
+        [
+          {
+            "node": "Merge Log Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase \u00b7 Insert Execution Log": {
+      "main": [
+        [
+          {
+            "node": "Merge Log Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Log Results": {
+      "main": [
+        [
+          {
+            "node": "Return Logging Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "aicsErrorHandler",
+    "timezone": "UTC",
+    "executionTimeout": 900
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "local-portfolio-n8n"
+  },
+  "versionId": "c0ef64e7-028f-4368-8afc-f83145adf6a6",
+  "pinData": {}
+}
