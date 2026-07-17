@@ -11,6 +11,7 @@ export default function Skills() {
     { title: 'Frontend', skills: skills.frontend, color: 'from-blue-500 to-cyan-500' },
     { title: 'Backend', skills: skills.backend, color: 'from-purple-500 to-pink-500' },
     { title: 'Tools', skills: skills.tools, color: 'from-cyan-500 to-blue-500' },
+    { title: 'Automation', skills: skills.automation, color: 'from-emerald-400 to-cyan-500' },
     { title: 'Deployment', skills: skills.deployment, color: 'from-pink-500 to-purple-500' },
   ];
 
@@ -33,7 +34,7 @@ export default function Skills() {
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full" />
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 xl:grid-cols-5 gap-6">
           {skillCategories.map((category, categoryIndex) => (
             <motion.div
               key={category.title}
