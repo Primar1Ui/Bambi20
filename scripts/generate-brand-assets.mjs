@@ -7,36 +7,11 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(root, 'public/images/logo-david-source.png');
 const publicDir = path.join(root, 'public');
 
-async function createTransparentLogo() {
-  const { data, info } = await sharp(source).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    const isDarkBg = lum < 58 && r < 90 && g < 90 && b < 120;
-
-    if (isDarkBg) {
-      data[i + 3] = 0;
-    }
-  }
-
-  const transparent = await sharp(data, {
-    raw: { width: info.width, height: info.height, channels: 4 },
-  })
-    .png()
-    .toBuffer();
-
-  const trimmed = await sharp(transparent).trim().toBuffer();
-  const meta = await sharp(trimmed).metadata();
-
-  await sharp(trimmed)
-    .resize({ height: 44, withoutEnlargement: false })
+async function createNavbarLogo() {
+  await sharp(source)
+    .resize(48, 48, { fit: 'cover', position: 'centre' })
     .png()
     .toFile(path.join(root, 'public/images/logo-david.png'));
-
-  return { trimmed, meta };
 }
 
 async function writeFavicons() {
@@ -64,6 +39,10 @@ async function writeFavicons() {
     { size: 16, buffer: png16 },
     { size: 32, buffer: png32 },
   ]);
+
+  fs.copyFileSync(path.join(publicDir, 'favicon.ico'), path.join(root, 'app/favicon.ico'));
+  await sharp(square).resize(32, 32).png().toFile(path.join(root, 'app/icon.png'));
+  await sharp(square).resize(180, 180).png().toFile(path.join(root, 'app/apple-icon.png'));
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="David">
   <image href="/favicon-32x32.png" width="32" height="32" />
@@ -111,6 +90,6 @@ function writeIco(filePath, entries) {
   fs.writeFileSync(filePath, out);
 }
 
-await createTransparentLogo();
+await createNavbarLogo();
 await writeFavicons();
 console.log('Logo and favicon assets generated.');

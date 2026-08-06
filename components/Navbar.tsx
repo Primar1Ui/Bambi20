@@ -337,17 +337,21 @@ export default function Navbar() {
               <Link
                 href="/"
                 onClick={closeMenu}
-                className="inline-flex items-center gap-2 min-h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c]"
+                className="inline-flex items-center gap-2.5 min-h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c]"
                 aria-label="David — home"
                 aria-current={pathname === '/' ? 'page' : undefined}
               >
+                <span className="text-xl md:text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+                  David
+                </span>
                 <Image
                   src="/images/logo-david.png"
-                  alt="David"
-                  width={44}
-                  height={44}
+                  alt=""
+                  width={48}
+                  height={48}
                   priority
-                  className="h-9 md:h-10 w-auto"
+                  aria-hidden="true"
+                  className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-sm"
                 />
               </Link>
             </motion.div>
