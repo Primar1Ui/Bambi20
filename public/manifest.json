@@ -33,10 +33,10 @@
       "purpose": "any"
     },
     {
-      "src": "/images/og-image.png",
-      "sizes": "1200x630",
+      "src": "/favicon.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "categories": ["portfolio", "business"]

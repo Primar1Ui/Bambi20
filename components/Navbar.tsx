@@ -342,12 +342,12 @@ export default function Navbar() {
                 aria-current={pathname === '/' ? 'page' : undefined}
               >
                 <Image
-                  src="/images/logo-david.svg"
+                  src="/images/logo-david.png"
                   alt="David"
-                  width={148}
-                  height={32}
+                  width={44}
+                  height={44}
                   priority
-                  className="h-7 md:h-8 w-auto"
+                  className="h-9 md:h-10 w-auto"
                 />
               </Link>
             </motion.div>
