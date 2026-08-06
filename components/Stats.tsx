@@ -4,22 +4,23 @@ import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { portfolioStats } from '@/lib/data';
 
-interface StatProps {
-  value: number;
+interface StatItemProps {
   label: string;
+  value: number;
   suffix?: string;
+  prefix?: string;
 }
 
-function Stat({ value, label, suffix = '' }: StatProps) {
+function StatItem({ label, value, suffix = '+', prefix = '' }: StatItemProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const inView = useInView(ref, { once: true, amount: 0.5 });
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!inView) return;
 
-    const duration = 1600;
-    const steps = 48;
+    const duration = 1400;
+    const steps = 40;
     const increment = value / steps;
     const stepDuration = duration / steps;
 
@@ -38,40 +39,45 @@ function Stat({ value, label, suffix = '' }: StatProps) {
   }, [inView, value]);
 
   return (
-    <div ref={ref} className="text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
-      >
-        {count}
-        {suffix}
-      </motion.div>
-      <p className="text-gray-400 dark:text-gray-400 light:text-gray-600 mt-2 text-sm font-medium">
+    <div
+      ref={ref}
+      className="flex flex-1 items-center justify-center px-4 py-6 md:py-8 text-center min-h-[88px]"
+    >
+      <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-wide text-gray-700 leading-snug">
+        <span className="text-[#0c1f4a]">{prefix}{count}{suffix}</span>
+        {' '}
         {label}
       </p>
     </div>
   );
 }
 
+const statItems: StatItemProps[] = [
+  { value: portfolioStats.projects, suffix: '+', label: 'Projects Delivered' },
+  { value: portfolioStats.clients, suffix: '+', label: 'Happy Clients' },
+  { value: portfolioStats.yearsExperience, suffix: '+', label: 'Years Experience' },
+  { value: portfolioStats.githubContributions, suffix: '+', label: 'GitHub Contributions' },
+];
+
 export default function Stats() {
   return (
-    <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-y border-gray-800/50">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
-        >
-          <Stat value={portfolioStats.projects} label="Projects Completed" suffix="+" />
-          <Stat value={portfolioStats.clients} label="Happy Clients" suffix="+" />
-          <Stat value={portfolioStats.yearsExperience} label="Years Experience" suffix="+" />
-          <Stat value={portfolioStats.githubContributions} label="GitHub Contributions" suffix="+" />
-        </motion.div>
-      </div>
+    <section
+      aria-label="Portfolio highlights"
+      className="relative z-20 bg-white border-y border-gray-200 shadow-[0_8px_32px_rgba(0,0,0,0.12)]"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.45 }}
+        className="max-w-7xl mx-auto"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
+          {statItems.map((item) => (
+            <StatItem key={item.label} {...item} />
+          ))}
+        </div>
+      </motion.div>
     </section>
   );
 }
