@@ -2,18 +2,36 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Bot, GitBranch, Workflow, Boxes, Users, CalendarCheck, Sparkles, FileSpreadsheet } from 'lucide-react';
+import { Bot, GitBranch, Workflow, Boxes, Users, CalendarCheck, Sparkles, FileSpreadsheet, CalendarDays, BellRing } from 'lucide-react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 const automations = [
   {
+    title: 'AI Appointment Booking Assistant',
+    description:
+      'Gmail intake, Groq LLM parsing, Airtable records, Google Calendar availability checks, and conditional booking confirmations.',
+    image: '/images/automation-ai-appointment-booking.png',
+    alt: 'n8n AI appointment booking workflow with Gmail, Groq LLM, Airtable, and Google Calendar',
+    icon: CalendarDays,
+    tags: ['n8n', 'Groq LLM', 'Google Calendar'],
+  },
+  {
     title: 'AI Customer Support Automation',
     description:
-      'Gmail/webhook intake, OpenAI classification, Airtable tickets, 90% confidence auto-replies, Slack human approval, and Supabase logging.',
+      'Gmail-triggered support flow with Groq classification, Airtable tickets, conditional AI replies, and automated follow-up emails.',
     image: '/images/automation-ai-customer-support.png',
-    alt: 'n8n AI customer support workflow with Gmail, classification, Airtable, Slack approval, and logging',
+    alt: 'n8n AI customer support workflow with Gmail, Groq LLM, Airtable, and branching replies',
     icon: Bot,
-    tags: ['n8n', 'OpenAI', 'Airtable + Slack'],
+    tags: ['n8n', 'Groq LLM', 'Airtable + Gmail'],
+  },
+  {
+    title: 'CamJRoberts Reminder',
+    description:
+      'Scheduled n8n workflow that pulls Google Sheets rows, filters due items, runs JavaScript logic, and sends Gmail reminders.',
+    image: '/images/automation-camjroberts-reminder.png',
+    alt: 'n8n CamJRoberts reminder workflow with schedule trigger, Google Sheets, filter, and Gmail',
+    icon: BellRing,
+    tags: ['n8n', 'Google Sheets', 'Gmail'],
   },
   {
     title: 'n8n API Automation',
