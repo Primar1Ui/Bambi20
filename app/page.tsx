@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import HireMeBanner from '@/components/HireMeBanner';
 import Hero from '@/components/Hero';
 import Stats from '@/components/Stats';
+import HomeBio from '@/components/HomeBio';
 import FeaturedProject from '@/components/FeaturedProject';
 import LandingCTA from '@/components/LandingCTA';
 import LatestBlogTeaser from '@/components/LatestBlogTeaser';
@@ -17,6 +18,7 @@ export default function Home() {
       <HireMeBanner />
       <Hero />
       <Stats />
+      <HomeBio />
       <FeaturedProject />
       <LatestBlogTeaser />
       <LandingCTA />
