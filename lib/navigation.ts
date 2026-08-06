@@ -35,6 +35,7 @@ export const navEntries: NavEntry[] = [
   { type: 'link', item: { key: 'nav.testimonials', href: '/testimonials', matchPath: '/testimonials' } },
   { type: 'link', item: { key: 'nav.caseStudies', href: '/case-studies', matchPath: '/case-studies' } },
   { type: 'link', item: { key: 'nav.blog', href: '/blog', matchPath: '/blog', matchNested: true } },
+  { type: 'link', item: { key: 'nav.hire', href: '/hire', matchPath: '/hire' } },
   { type: 'link', item: { key: 'nav.contact', href: '/contact', matchPath: '/contact' } },
 ];
 
@@ -55,6 +56,7 @@ export const legacyHashRoutes: Record<string, string> = {
   '#automation': '/automation',
   '#testimonials': '/testimonials',
   '#contact': '/contact',
+  '#hire': '/hire',
 };
 
 export function isNavItemActive(

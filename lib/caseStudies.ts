@@ -14,48 +14,59 @@ export interface CaseStudy {
 
 export const caseStudies: CaseStudy[] = [
   {
-    id: 'ai-saas-dashboard',
-    title: 'AI SaaS Dashboard',
-    problem: 'A startup needed a scalable SaaS platform with AI capabilities, user authentication, and analytics. They required a solution that could handle rapid user growth while maintaining performance.',
-    solution: 'Built a full-stack Next.js application with Supabase for authentication and database management. Integrated AI features using modern APIs, implemented real-time analytics dashboard, and designed a responsive UI with Tailwind CSS. The architecture supports horizontal scaling and includes proper error handling and loading states.',
-    techStack: ['Next.js', 'Supabase', 'Tailwind CSS', 'TypeScript', 'React'],
-    results: 'Delivered a production-ready SaaS MVP in 3 weeks. The platform successfully handles user authentication, real-time data updates, and AI-powered features. The modular architecture allows for easy feature additions.',
+    id: 'smart-spend-dashboard',
+    title: 'Smart Expense and Budget Dashboard',
+    problem:
+      'The client needed a simple way to track spending and see budget progress without juggling spreadsheets or a heavy finance app.',
+    solution:
+      'I built a React and Next.js dashboard with Supabase for data storage. Users can log expenses, group them by category, and see budget totals update in real time on desktop and mobile.',
+    techStack: ['React', 'Next.js', 'Tailwind CSS', 'Supabase'],
+    results:
+      'The client got a private expense tracker they could use daily. The app loads fast, works on mobile, and is deployed on Vercel for easy updates.',
     metrics: [
-      '3 weeks development time',
-      '100% authentication success rate',
-      'Sub-second page load times',
+      'Live production deploy on Vercel',
+      'Real-time expense and budget views',
+      'Mobile-friendly dashboard layout',
     ],
-    github: 'https://github.com/Primar1Ui/ai-web-canvas',
+    github: 'https://github.com/Primar1Ui/smart-spend-dashboard',
+    live: 'https://smart-spend-dashboard.vercel.app/',
     featured: true,
   },
   {
-    id: 'finance-tracker-app',
-    title: 'Finance Tracker App',
-    problem: 'A client needed a custom finance tracking solution that could sync expenses in real-time across devices, provide budgeting insights, and maintain data privacy without relying on third-party financial services.',
-    solution: 'Developed a React-based application with Supabase backend for real-time synchronization. Implemented secure data storage, expense categorization, budget tracking, and visual analytics. Built responsive design for mobile and desktop access.',
-    techStack: ['React', 'Supabase', 'JavaScript', 'CSS'],
-    results: 'Created a fully functional finance tracker that provides real-time expense tracking and budgeting insights. The client now has complete visibility into their cash flow with a private, secure solution.',
+    id: 'ai-customer-support-automation',
+    title: 'AI Customer Support Automation',
+    problem:
+      'Support emails were piling up. The team needed incoming messages classified, logged, and answered faster without copying the same replies all day.',
+    solution:
+      'I built an n8n workflow triggered by Gmail. Groq classifies each message, Airtable stores the ticket, and the flow sends the right reply or flags cases that need a human. Errors are logged so nothing gets lost quietly.',
+    techStack: ['n8n', 'Groq LLM', 'Gmail', 'Airtable', 'Supabase'],
+    results:
+      'Support intake became automatic. Common questions get handled quickly, tickets stay organized, and the team spends less time on repetitive email work.',
     metrics: [
-      'Real-time data synchronization',
-      '100% data privacy (self-hosted)',
-      'Mobile-responsive design',
+      'Gmail-triggered workflow with branching logic',
+      'AI classification plus structured ticket storage',
+      'Automated replies with human handoff paths',
     ],
-    github: 'https://github.com/Primar1Ui/dapper-access',
     featured: true,
   },
   {
     id: 'baxauto-website',
     title: 'BaxAuto Marketing Website',
-    problem: 'BaxAuto needed a modern, professional marketing website to showcase their services and attract new clients. The site needed to be fast, SEO-friendly, and reflect their brand identity.',
-    solution: 'Designed and developed a clean, modern landing page using Next.js and Tailwind CSS. Focused on clear service presentation, fast loading times, and mobile-first responsive design. Implemented proper SEO optimization and accessibility features.',
+    client: 'BaxAuto',
+    problem:
+      'BaxAuto needed a clean marketing site that explained their services clearly and worked well on phones.',
+    solution:
+      'I designed and built a Next.js landing page with Tailwind CSS. The layout focuses on service sections, fast load times, and basic SEO setup so the site is easy to find and read.',
     techStack: ['Next.js', 'Tailwind CSS', 'TypeScript'],
-    results: 'Delivered a responsive, high-performance marketing website that effectively communicates BaxAuto\'s services. The site loads quickly, ranks well in search engines, and provides an excellent user experience across all devices.',
+    results:
+      'BaxAuto launched a professional site that matches their brand and performs well on mobile. Page speed and structure were part of the build from the start.',
     metrics: [
-      'Fast page load times',
-      'SEO optimized',
-      'Fully responsive design',
+      'Responsive layout across screen sizes',
+      'SEO-friendly page structure',
+      'Fast static delivery via Vercel',
     ],
     github: 'https://github.com/Primar1Ui/v0-baxauto-website-development',
+    live: 'https://v0-baxauto-website-development-qyak.vercel.app/',
     featured: false,
   },
 ];

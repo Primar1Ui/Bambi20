@@ -22,27 +22,27 @@ export const blogPosts: BlogPost[] = [
     content: `
 ## Introduction
 
-Building a SaaS product from scratch involves choosing the right stack, setting up authentication, and delivering value quickly. This post walks through a minimal setup using **Next.js 14** (App Router) and **Supabase**.
+If you are starting a SaaS product, the hardest part is not picking tools. It is shipping something small enough to test with real users. This is the stack I use most often: **Next.js 14** with the App Router and **Supabase** for auth and data.
 
 ## Why Next.js + Supabase?
 
-- **Next.js** gives you server components, API routes, and great DX.
-- **Supabase** provides Postgres, auth, and real-time out of the box.
+- **Next.js** gives you server components, API routes, and a smooth developer experience.
+- **Supabase** gives you Postgres, auth, and real-time features without setting up a full backend from scratch.
 
 ## Getting Started
 
 1. Create a new Next.js app with \`create-next-app\`.
-2. Add Supabase and configure environment variables.
-3. Set up Supabase Auth (email/password or OAuth).
-4. Build your first protected route and dashboard.
+2. Add Supabase and configure your environment variables.
+3. Set up Supabase Auth with email/password or OAuth.
+4. Build your first protected route and a simple dashboard.
 
 ## Key Takeaways
 
-- Use Server Components for data fetching where possible.
+- Use Server Components for data fetching where it makes sense.
 - Protect routes with middleware or server-side checks.
-- Keep the first version small and ship fast.
+- Keep version one small and ship fast.
 
-*More posts coming soon — stay tuned.*
+*More posts on the way.*
     `.trim(),
   },
   {
@@ -56,22 +56,22 @@ Building a SaaS product from scratch involves choosing the right stack, setting 
     content: `
 ## Why It Matters
 
-A portfolio is often the first impression for recruiters and clients. Fast load times and good SEO help you get found and keep visitors engaged.
+Your portfolio is often the first thing a client or recruiter sees. If the site is slow or hard to find on Google, you lose attention before anyone reads your work.
 
-## What We Did
+## What I Focus On
 
-- **Metadata**: Title, description, Open Graph, and Twitter cards.
-- **Structured data**: JSON-LD for Person and WebSite.
-- **Sitemap & robots.txt**: So crawlers can index your site.
+- **Metadata**: Clear title, description, Open Graph, and Twitter cards.
+- **Structured data**: JSON-LD for Person, WebSite, and FAQ content.
+- **Sitemap and robots.txt**: So search engines can crawl the site properly.
 - **Images**: Next.js \`Image\` with sensible sizes and lazy loading.
 
 ## Performance
 
-- Minimize client-side JS with Server Components.
-- Use \`prefers-reduced-motion\` for accessibility.
-- Keep animations subtle and optional.
+- Keep client-side JavaScript lean with Server Components.
+- Respect \`prefers-reduced-motion\` for accessibility.
+- Use animation sparingly so the site still feels fast.
 
-*More posts coming soon.*
+*More posts on the way.*
     `.trim(),
   },
   {
@@ -86,28 +86,28 @@ A portfolio is often the first impression for recruiters and clients. Fast load 
     content: `
 ## Why Automation Matters
 
-Manual lead follow-up and repetitive content ops slow teams down. With **n8n**, you can connect APIs, AI models, spreadsheets, and email into reliable workflows that run on demand or on a schedule.
+Manual lead follow-up and repetitive content work slow teams down. With **n8n**, you can connect APIs, AI models, spreadsheets, and email into workflows that run on demand or on a schedule.
 
 ## Three Workflow Patterns I Use
 
-1. **API ingestion** — Trigger a flow, fetch external data, reshape fields, and hand results to the next step.
-2. **Content operations** — Schedule pipeline runs that prepare content, update Google Sheets, and send notifications.
-3. **AI lead qualification** — Branch on conditions, score leads with an LLM (for example Groq), log outcomes, and alert via Gmail.
+1. **API ingestion**: Trigger a flow, fetch external data, reshape fields, and pass results to the next step.
+2. **Content operations**: Schedule pipeline runs that prepare content, update Google Sheets, and send notifications.
+3. **AI lead qualification**: Branch on conditions, score leads with an LLM like Groq, log outcomes, and alert via Gmail.
 
 ## Implementation Tips
 
 - Keep each node focused on one job: fetch, transform, decide, or notify.
-- Use clear branch labels so true/false paths stay maintainable.
-- Log every important outcome to Sheets or a database before sending emails.
-- Start with a manual trigger, then promote proven flows to a schedule.
+- Use clear branch labels so true and false paths stay easy to maintain.
+- Log important outcomes to Sheets or a database before sending emails.
+- Start with a manual trigger, then move proven flows to a schedule.
 
 ## Key Takeaways
 
-- Automation is most valuable when it removes busywork without hiding failures.
-- AI belongs in the middle of the workflow — after clean inputs, before durable storage and alerts.
+- Automation works best when it removes busywork without hiding failures.
+- AI fits in the middle of the workflow: after clean inputs, before storage and alerts.
 - Ship small, observable flows first, then expand.
 
-*Want a similar system for your team? Reach out via the contact form.*
+*Need a similar system for your team? Use the contact form and send a short brief.*
     `.trim(),
   },
 ];

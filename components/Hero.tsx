@@ -48,7 +48,7 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-10">
               <Link
-                href="/contact"
+                href="/hire"
                 className="inline-flex items-center justify-center gap-2 min-h-12 px-6 py-3 rounded-lg bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
                 Start a project

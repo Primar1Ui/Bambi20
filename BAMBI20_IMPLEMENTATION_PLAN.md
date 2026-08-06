@@ -57,9 +57,9 @@ Track progress phase by phase. Mark items `[x]` when shipped to `main`.
 
 | # | Task | Files | Status |
 |---|------|--------|--------|
-| 4.1 | Dedicated `/hire` landing page (or expand `/services`) | `app/hire/page.tsx`, nav | [ ] |
-| 4.2 | Rewrite blog post bodies (remove em dashes, human tone) | `lib/blog.ts` | [ ] |
-| 4.3 | Rewrite case study copy in plain language | `lib/caseStudies.ts` | [ ] |
+| 4.1 | Dedicated `/hire` landing page (or expand `/services`) | `app/hire/page.tsx`, nav | [x] |
+| 4.2 | Rewrite blog post bodies (remove em dashes, human tone) | `lib/blog.ts` | [x] |
+| 4.3 | Rewrite case study copy in plain language | `lib/caseStudies.ts` | [x] |
 
 **Exit criteria:** Hire path is obvious; blog and case studies read like a person wrote them.
 
@@ -96,9 +96,9 @@ Track progress phase by phase. Mark items `[x]` when shipped to `main`.
 Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 (optional)
 ```
 
-**Current focus:** Phase 4 — conversion and content (`/hire`, blog/case study rewrites)
+**Current focus:** Phase 5 — UX and i18n (language switcher, package rename, custom 404)
 
-**Completed:** Phase 3 (Structured data)
+**Completed:** Phase 3 (Structured data), Phase 4 (Conversion and content)
 
 ---
 
