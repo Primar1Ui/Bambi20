@@ -2,71 +2,100 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
-import { SITE_BRAND, SITE_HERO_TAGLINE } from '@/lib/site';
+import { portfolioStats } from '@/lib/data';
+import {
+  SITE_BRAND,
+  SITE_LEGAL_NAME,
+  SITE_HERO_TAGLINE,
+} from '@/lib/site';
 
-const HEADLINE_LINES = [
-  'Modern Web Apps. AI Integrations.',
-  'Workflows That Scale.',
+const TECH_STACK = 'Next.js · Supabase · React · n8n · Zapier';
+
+const heroStats = [
+  { value: `${portfolioStats.projects}+`, label: 'Shipped projects' },
+  { value: `${portfolioStats.clients}+`, label: 'Happy clients' },
+  { value: `${portfolioStats.yearsExperience}+`, label: 'Years experience' },
 ];
 
 export default function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
-    <section
-      id="home"
-      className="relative overflow-hidden bg-[var(--background)]"
-    >
-      <div
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,var(--page-glow),transparent_60%)]"
-        aria-hidden="true"
-      />
+    <section id="home" className="relative bg-[var(--background)] border-b border-[var(--border)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 md:pt-32 pb-16 md:pb-20">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
+          >
+            <p className="text-sm font-medium text-[var(--muted)] mb-4">
+              {SITE_BRAND} · Full stack developer · Automation
+            </p>
 
-      <div className="relative z-10 flex flex-col items-center justify-center px-3 sm:px-6 pt-24 sm:pt-28 md:pt-32 pb-14 sm:pb-16 md:pb-20 text-center">
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' }}
-        >
-          <Image
-            src="/images/logo-bambi20.svg"
-            alt={`B20 ${SITE_BRAND}`}
-            width={220}
-            height={48}
-            priority
-            className="h-11 sm:h-12 md:h-14 w-auto mx-auto"
-          />
-        </motion.div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold tracking-tight text-[var(--foreground)] leading-[1.1] mb-6">
+              I build apps that ship to production
+            </h1>
 
-        <motion.p
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.1, duration: 0.5 }}
-          className="mt-4 sm:mt-5 text-xs sm:text-sm md:text-base font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[var(--muted)]"
-        >
-          {SITE_HERO_TAGLINE}
-        </motion.p>
+            <p className="text-base sm:text-lg text-[var(--muted)] leading-relaxed max-w-xl mb-8">
+              {SITE_LEGAL_NAME}, known as {SITE_BRAND}, builds web apps, Supabase backends, and
+              workflow automation with n8n and Zapier. {SITE_HERO_TAGLINE.replace(/\s*\|\s*/g, ', ')}.
+            </p>
 
-        <motion.h1
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.15, duration: 0.5 }}
-          className="mt-6 sm:mt-8 w-full max-w-5xl px-2 sm:px-4 font-[Oswald,sans-serif] font-bold uppercase tracking-[0.04em] sm:tracking-wide text-[var(--foreground)] leading-[1.12] text-balance"
-        >
-          {HEADLINE_LINES.map((line, index) => (
-            <span
-              key={line}
-              className={`block ${
-                index === 0
-                  ? 'text-base leading-snug sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.65rem]'
-                  : 'text-[1.35rem] sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3rem] mt-1 sm:mt-1.5 md:mt-2'
-              }`}
-            >
-              {line}
-            </span>
-          ))}
-        </motion.h1>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-10">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 min-h-12 px-6 py-3 rounded-lg bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              >
+                Start a project
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/projects"
+                className="inline-flex items-center justify-center gap-2 min-h-12 px-6 py-3 rounded-lg border border-[var(--border)] text-[var(--foreground)] text-sm font-semibold hover:bg-[var(--surface-solid)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              >
+                View portfolio
+              </Link>
+            </div>
+
+            <dl className="grid grid-cols-3 gap-4 max-w-md">
+              {heroStats.map((stat) => (
+                <div key={stat.label}>
+                  <dt className="sr-only">{stat.label}</dt>
+                  <dd className="text-2xl sm:text-3xl font-bold text-[var(--foreground)]">{stat.value}</dd>
+                  <dd className="text-xs sm:text-sm text-[var(--muted)] mt-1">{stat.label}</dd>
+                </div>
+              ))}
+            </dl>
+          </motion.div>
+
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.1, duration: 0.5 }}
+            className="mx-auto w-full max-w-md lg:max-w-none"
+          >
+            <div className="rounded-2xl overflow-hidden border border-[var(--border)] bg-[var(--surface-solid)] shadow-lg">
+              <div className="relative aspect-[4/5] sm:aspect-[3/4]">
+                <Image
+                  src="/images/oluwatosin-portrait.png"
+                  alt={`${SITE_LEGAL_NAME}, ${SITE_BRAND}`}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 420px"
+                  className="object-cover object-top"
+                />
+              </div>
+              <div className="px-5 py-4 border-t border-[var(--border)]">
+                <p className="font-semibold text-[var(--foreground)]">{SITE_LEGAL_NAME}</p>
+                <p className="text-sm text-[var(--muted)] mt-1">{TECH_STACK}</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

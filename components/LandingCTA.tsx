@@ -2,90 +2,49 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Briefcase, Sparkles, User } from 'lucide-react';
-
-const links = [
-  {
-    href: '/about',
-    label: 'About me',
-    description: 'Background, current work, and skills',
-    icon: User,
-  },
-  {
-    href: '/projects',
-    label: 'View projects',
-    description: 'Portfolio, case studies, and live builds',
-    icon: Briefcase,
-  },
-  {
-    href: '/automation',
-    label: 'Automation work',
-    description: 'n8n, Zapier, and AI workflow builds',
-    icon: Sparkles,
-  },
-];
+import { ArrowRight } from 'lucide-react';
+import { primaryWhatsApp } from '@/lib/data';
+import { trackFunnel } from '@/lib/analytics';
 
 export default function LandingCTA() {
   return (
     <section
-      aria-labelledby="explore-heading"
-      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 border-t border-[var(--border)]"
+      aria-labelledby="final-cta-heading"
+      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 border-t border-[var(--border)] bg-[var(--surface-solid)]/40"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-3xl mx-auto text-center">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10"
+          transition={{ duration: 0.45 }}
         >
-          <h2 id="explore-heading" className="text-3xl md:text-4xl font-bold mb-3">
-            Explore the{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-              full portfolio
-            </span>
+          <h2 id="final-cta-heading" className="text-2xl md:text-4xl font-bold text-[var(--foreground)] mb-4">
+            Ready to build something real?
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Dive into projects, automation workflows, services, and client feedback on dedicated pages.
+          <p className="text-[var(--muted)] leading-relaxed mb-8">
+            Whether it is a web app, Supabase backend, or n8n and Zapier automation, tell me about
+            your project and I will reply within 24 hours.
           </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-4 mb-10">
-          {links.map((link, index) => (
-            <motion.div
-              key={link.href}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08, duration: 0.4 }}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 min-h-12 px-6 py-3 rounded-lg bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold hover:opacity-90 transition-opacity"
             >
-              <Link
-                href={link.href}
-                className="group flex flex-col h-full p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
-              >
-                <link.icon className="w-6 h-6 text-blue-400 mb-4" aria-hidden="true" />
-                <span className="text-lg font-semibold text-white mb-2 group-hover:text-blue-300 transition-colors">
-                  {link.label}
-                </span>
-                <span className="text-sm text-gray-400 mb-4 flex-1">{link.description}</span>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-cyan-400">
-                  Open page
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="text-center">
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
-          >
-            Start a project
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
+              Start a project
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a
+              href={primaryWhatsApp.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackFunnel.whatsappClick('home-final-cta')}
+              className="inline-flex items-center justify-center gap-2 min-h-12 px-6 py-3 rounded-lg border border-[var(--border)] text-[var(--foreground)] text-sm font-semibold hover:bg-[var(--surface-solid)] transition-colors"
+            >
+              Message on WhatsApp
+            </a>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
