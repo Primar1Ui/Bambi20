@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
-import { SITE_BRAND } from '@/lib/site';
+import { SITE_BRAND, SITE_HERO_TAGLINE } from '@/lib/site';
 
 const HEADLINE_LINES = [
   'Modern Web Apps. AI Integrations.',
@@ -16,31 +16,43 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-[var(--hero-bg)]"
+      className="relative overflow-hidden bg-[var(--background)]"
     >
-      <div className="relative z-10 flex flex-col items-center justify-center px-3 sm:px-6 pt-20 sm:pt-24 md:pt-28 pb-8 sm:pb-10 md:pb-12">
+      <div
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,var(--page-glow),transparent_60%)]"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 flex flex-col items-center justify-center px-3 sm:px-6 pt-24 sm:pt-28 md:pt-32 pb-14 sm:pb-16 md:pb-20 text-center">
         <motion.div
           initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' }}
-          className="w-full flex justify-center"
         >
           <Image
-            src="/images/hero-brand.png"
-            alt={`${SITE_BRAND} full stack, AI web apps, and automation`}
-            width={960}
-            height={540}
+            src="/images/logo-bambi20.svg"
+            alt={`B20 ${SITE_BRAND}`}
+            width={220}
+            height={48}
             priority
-            sizes="(max-width: 640px) 92vw, (max-width: 1024px) 78vw, 760px"
-            className="w-full max-w-[min(520px,92vw)] sm:max-w-[min(660px,82vw)] md:max-w-[min(760px,72vw)] h-auto"
+            className="h-11 sm:h-12 md:h-14 w-auto mx-auto"
           />
         </motion.div>
+
+        <motion.p
+          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.1, duration: 0.5 }}
+          className="mt-4 sm:mt-5 text-xs sm:text-sm md:text-base font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[var(--muted)]"
+        >
+          {SITE_HERO_TAGLINE}
+        </motion.p>
 
         <motion.h1
           initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.15, duration: 0.5 }}
-          className="mt-2 sm:mt-3 md:mt-4 w-full max-w-5xl px-2 sm:px-4 text-center font-[Oswald,sans-serif] font-bold uppercase tracking-[0.04em] sm:tracking-wide text-white leading-[1.12] text-balance"
+          className="mt-6 sm:mt-8 w-full max-w-5xl px-2 sm:px-4 font-[Oswald,sans-serif] font-bold uppercase tracking-[0.04em] sm:tracking-wide text-[var(--foreground)] leading-[1.12] text-balance"
         >
           {HEADLINE_LINES.map((line, index) => (
             <span

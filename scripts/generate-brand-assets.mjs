@@ -4,19 +4,12 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const source = path.join(root, 'public/images/logo-david-source.png');
+const iconSvg = path.join(root, 'public/images/icon-bambi20.svg');
 const publicDir = path.join(root, 'public');
 
-async function createNavbarLogo() {
-  await sharp(source)
-    .resize(48, 48, { fit: 'cover', position: 'centre' })
-    .png()
-    .toFile(path.join(root, 'public/images/logo-david.png'));
-}
-
 async function writeFavicons() {
-  const square = await sharp(source)
-    .resize(512, 512, { fit: 'cover', position: 'centre' })
+  const square = await sharp(iconSvg)
+    .resize(512, 512)
     .png()
     .toBuffer();
 
@@ -44,7 +37,7 @@ async function writeFavicons() {
   await sharp(square).resize(32, 32).png().toFile(path.join(root, 'app/icon.png'));
   await sharp(square).resize(180, 180).png().toFile(path.join(root, 'app/apple-icon.png'));
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="David">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="B20 Bambi20">
   <image href="/favicon-32x32.png" width="32" height="32" />
 </svg>`;
   fs.writeFileSync(path.join(publicDir, 'favicon.svg'), svg);
@@ -90,6 +83,5 @@ function writeIco(filePath, entries) {
   fs.writeFileSync(filePath, out);
 }
 
-await createNavbarLogo();
 await writeFavicons();
-console.log('Logo and favicon assets generated.');
+console.log('B20 Bambi20 favicon assets generated.');
