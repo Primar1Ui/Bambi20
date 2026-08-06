@@ -2,20 +2,15 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { blogPosts } from '@/lib/blog';
 import BlogList from '@/components/BlogList';
-import { SITE_URL } from '@/lib/site';
+import { createPageMetadata } from '@/lib/page-metadata';
+import { SITE_BRAND } from '@/lib/site';
 
-export const metadata: Metadata = {
-  title: 'Blog | David — Full-Stack & AI Web Developer',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Blog',
   description:
-    'Technical articles, tutorials, and thoughts on Next.js, Supabase, SaaS, automation, and web development.',
-  openGraph: {
-    title: 'Blog | David — Full-Stack & AI Web Developer',
-    description:
-      'Technical articles, tutorials, and thoughts on Next.js, Supabase, SaaS, automation, and web development.',
-    url: `${SITE_URL}/blog`,
-    images: [{ url: '/images/og-image.png', width: 1200, height: 630 }],
-  },
-};
+    'Notes on Next.js, Supabase, SaaS builds, automation, and freelance web development from Bambi20.',
+  path: '/blog',
+});
 
 export default function BlogPage() {
   return (
@@ -24,24 +19,15 @@ export default function BlogPage() {
         <div className="mb-12">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors text-sm font-medium mb-6"
+            className="inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors mb-6"
           >
             ← Back to home
           </Link>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
-          <p className="text-lg text-gray-400 max-w-2xl mb-4">
-            Technical articles, tutorials, and thoughts on web development, Next.js, Supabase,
-            automation, and building SaaS products.
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{SITE_BRAND} Blog</h1>
+          <p className="text-gray-400 text-lg">
+            Practical posts on building and shipping web projects.
           </p>
-          <a
-            href="/feed"
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-400 transition-colors"
-            title="RSS feed"
-          >
-            Subscribe via RSS
-          </a>
         </div>
-
         <BlogList posts={blogPosts} />
       </div>
     </main>

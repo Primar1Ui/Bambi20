@@ -4,19 +4,14 @@ import HashScroll from '@/components/HashScroll';
 import About from '@/components/About';
 import CurrentWork from '@/components/CurrentWork';
 import Skills from '@/components/Skills';
-import { SITE_URL } from '@/lib/site';
+import { createPageMetadata } from '@/lib/page-metadata';
 
-export const metadata: Metadata = {
-  title: 'About | David — Full-Stack & AI Web Developer',
+export const metadata: Metadata = createPageMetadata({
+  title: 'About',
   description:
-    'Learn about David — background, current work, and technical skills across full-stack development, AI integrations, and automation.',
-  openGraph: {
-    title: 'About | David — Full-Stack & AI Web Developer',
-    description:
-      'Learn about David — background, current work, and technical skills across full-stack development, AI integrations, and automation.',
-    url: `${SITE_URL}/about`,
-  },
-};
+    'About Oluwatosin David (Bambi20): full stack developer background, current work, and technical skills.',
+  path: '/about',
+});
 
 export default function AboutPage() {
   return (

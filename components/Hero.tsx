@@ -3,9 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
-
-/** Sampled from hero-brand.png corners — keeps section flush with artwork edges */
-const HERO_BG = '#020a1f';
+import { SITE_BRAND } from '@/lib/site';
 
 const HEADLINE_LINES = [
   'Modern Web Apps. AI Integrations.',
@@ -18,8 +16,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden"
-      style={{ backgroundColor: HERO_BG }}
+      className="relative overflow-hidden bg-[var(--hero-bg)]"
     >
       <div className="relative z-10 flex flex-col items-center justify-center px-3 sm:px-6 pt-20 sm:pt-24 md:pt-28 pb-8 sm:pb-10 md:pb-12">
         <motion.div
@@ -30,7 +27,7 @@ export default function Hero() {
         >
           <Image
             src="/images/hero-brand.png"
-            alt="David — full-stack, AI web apps, and automation"
+            alt={`${SITE_BRAND} full stack, AI web apps, and automation`}
             width={960}
             height={540}
             priority

@@ -16,6 +16,7 @@ import {
   type NavDropdown,
 } from '@/lib/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
+import { SITE_BRAND } from '@/lib/site';
 
 function navLinkClass(isActive: boolean) {
   return [
@@ -99,7 +100,7 @@ function DesktopDropdown({ dropdown, isActive, isItemActive, t, onNavigate }: De
             className="absolute left-0 top-full pt-2 min-w-[200px] z-50"
             role="menu"
           >
-            <div className="rounded-xl border border-gray-700/80 bg-[#0c1628]/98 backdrop-blur-md shadow-xl py-1.5">
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] backdrop-blur-md shadow-xl py-1.5">
               {dropdown.items.map((item) => {
                 const active = isItemActive(item);
                 return (
@@ -337,12 +338,12 @@ export default function Navbar() {
               <Link
                 href="/"
                 onClick={closeMenu}
-                className="inline-flex items-center gap-2.5 min-h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c]"
-                aria-label="David — home"
+                className="inline-flex items-center gap-2.5 min-h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                aria-label={`${SITE_BRAND} home`}
                 aria-current={pathname === '/' ? 'page' : undefined}
               >
                 <span className="text-xl md:text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-transparent">
-                  David
+                  {SITE_BRAND}
                 </span>
                 <Image
                   src="/images/logo-david.png"
@@ -383,7 +384,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
             transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.2 }}
-            className="md:hidden fixed inset-0 z-[90] bg-[#070f1c]"
+            className="md:hidden fixed inset-0 z-[90] bg-[var(--background)]"
             onClick={closeMenu}
             aria-hidden={!isOpen}
           >
@@ -397,7 +398,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.2 }}
-              className="absolute inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-gray-800 bg-[#070f1c]"
+              className="absolute inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-[var(--border)] bg-[var(--background)]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-4 py-6 space-y-1">

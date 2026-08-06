@@ -16,7 +16,7 @@ export const blogPosts: BlogPost[] = [
     description:
       'A practical guide to building a production-ready SaaS MVP using Next.js App Router and Supabase for auth and data.',
     date: '2024-01-15',
-    author: 'David',
+    author: 'Bambi20',
     tags: ['Next.js', 'Supabase', 'SaaS'],
     featured: true,
     content: `
@@ -51,7 +51,7 @@ Building a SaaS product from scratch involves choosing the right stack, setting 
     description:
       'How to make your developer portfolio fast, accessible, and discoverable by search engines.',
     date: '2024-01-10',
-    author: 'David',
+    author: 'Bambi20',
     tags: ['SEO', 'Next.js', 'Performance'],
     content: `
 ## Why It Matters
@@ -80,7 +80,7 @@ A portfolio is often the first impression for recruiters and clients. Fast load 
     description:
       'How I design practical n8n workflows that connect APIs, AI models, Google Sheets, and Gmail for lead qualification and content operations.',
     date: '2026-07-16',
-    author: 'David',
+    author: 'Bambi20',
     tags: ['n8n', 'Automation', 'AI'],
     featured: true,
     content: `

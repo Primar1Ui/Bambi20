@@ -55,7 +55,7 @@ export default function Newsletter() {
         <p className="text-gray-400 mb-6">
           {NEWSLETTER_ENABLED
             ? 'Get occasional updates on new posts and projects. No spam.'
-            : 'Newsletter coming soon — for now, say hello via the contact form or WhatsApp. I reply within 24 hours.'}
+            : 'Newsletter coming soon. For now, use the contact form or WhatsApp. I reply within 24 hours.'}
         </p>
         {NEWSLETTER_ENABLED ? (
           <>

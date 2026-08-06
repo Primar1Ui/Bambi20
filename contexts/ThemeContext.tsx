@@ -11,14 +11,15 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const DEEP_BLUE_DARK = '#070f1c';
-const DEEP_BLUE_ELEVATED = '#0b1628';
+const THEME_COLORS = {
+  dark: '#070f1c',
+  light: '#f4f4f5',
+} as const;
 
 function getPreferredTheme(): Theme {
   if (typeof window === 'undefined') return 'dark';
   try {
     const stored = localStorage.getItem('theme');
-    // Always prefer deep navy dark unless the user explicitly chose elevated navy ("light")
     if (stored === 'light' || stored === 'dark') return stored;
   } catch {
     // ignore storage errors
@@ -30,9 +31,10 @@ function applyTheme(theme: Theme) {
   if (typeof document === 'undefined') return;
   document.documentElement.classList.remove('light', 'dark');
   document.documentElement.classList.add(theme);
+  document.documentElement.style.colorScheme = theme;
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    meta.setAttribute('content', theme === 'light' ? DEEP_BLUE_ELEVATED : DEEP_BLUE_DARK);
+    meta.setAttribute('content', THEME_COLORS[theme]);
   }
 }
 
@@ -55,6 +57,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggleTheme = () => {
     const newTheme: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
+    applyTheme(newTheme);
     try {
       localStorage.setItem('theme', newTheme);
     } catch {

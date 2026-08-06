@@ -21,9 +21,9 @@
     "loading": "Cargando..."
   },
   "hero": {
-    "greeting": "Hola, soy David",
-    "tagline": "Desarrollador Full-Stack e IA",
-    "description": "Creo aplicaciones web modernas, integraciones de IA y productos SaaS. Creemos algo grande juntos.",
+    "greeting": "Hola, soy Oluwatosin (Bambi20)",
+    "tagline": "Desarrollador web full stack",
+    "description": "Creo aplicaciones web, backends con Supabase y flujos de automatización para clientes en Nigeria y el extranjero.",
     "downloadCV": "Descargar CV",
     "viewProjects": "Ver proyectos",
     "contactMe": "Contáctame"

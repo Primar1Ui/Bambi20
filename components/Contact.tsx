@@ -178,11 +178,11 @@ export default function Contact() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Let's <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Connect</span>
+            Get in <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Touch</span>
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-4" />
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Let's build something amazing together
+            Tell me about your project. I reply within 24 hours by email or WhatsApp.
           </p>
         </motion.div>
 

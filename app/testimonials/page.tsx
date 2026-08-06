@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import PageShell from '@/components/PageShell';
 import { TestimonialSkeletonGrid } from '@/components/skeletons/TestimonialSkeleton';
-import { SITE_URL } from '@/lib/site';
+import { createPageMetadata } from '@/lib/page-metadata';
 
 const Testimonials = dynamic(() => import('@/components/Testimonials'), {
   loading: () => (
@@ -19,17 +19,12 @@ const Testimonials = dynamic(() => import('@/components/Testimonials'), {
   ),
 });
 
-export const metadata: Metadata = {
-  title: 'Testimonials | David — Client Reviews',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Testimonials',
   description:
-    'Verified client testimonials and Fiverr feedback for David — full-stack developer and automation specialist.',
-  openGraph: {
-    title: 'Testimonials | David — Client Reviews',
-    description:
-      'Verified client testimonials and Fiverr feedback for David — full-stack developer and automation specialist.',
-    url: `${SITE_URL}/testimonials`,
-  },
-};
+    'Client testimonials and Fiverr reviews for Oluwatosin David (Bambi20), full stack developer and automation specialist.',
+  path: '/testimonials',
+});
 
 export default function TestimonialsPage() {
   return (

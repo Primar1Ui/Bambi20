@@ -3,6 +3,7 @@ import HireMeBanner from '@/components/HireMeBanner';
 import Hero from '@/components/Hero';
 import Stats from '@/components/Stats';
 import HomeBio from '@/components/HomeBio';
+import HomeFaq from '@/components/HomeFaq';
 import FeaturedProject from '@/components/FeaturedProject';
 import LandingCTA from '@/components/LandingCTA';
 import LatestBlogTeaser from '@/components/LatestBlogTeaser';
@@ -19,6 +20,7 @@ export default function Home() {
       <Hero />
       <Stats />
       <HomeBio />
+      <HomeFaq />
       <FeaturedProject />
       <LatestBlogTeaser />
       <LandingCTA />

@@ -1,19 +1,14 @@
 import type { Metadata } from 'next';
 import PageShell from '@/components/PageShell';
 import AutomationShowcase from '@/components/AutomationShowcase';
-import { SITE_URL } from '@/lib/site';
+import { createPageMetadata } from '@/lib/page-metadata';
 
-export const metadata: Metadata = {
-  title: 'Automation | David — n8n & Zapier Workflows',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Automation',
   description:
-    'Explore David\'s workflow automation builds — n8n, Zapier, AI customer support, appointment booking, and more.',
-  openGraph: {
-    title: 'Automation | David — n8n & Zapier Workflows',
-    description:
-      'Explore David\'s workflow automation builds — n8n, Zapier, AI customer support, appointment booking, and more.',
-    url: `${SITE_URL}/automation`,
-  },
-};
+    'n8n and Zapier workflow builds by Bambi20: AI customer support, appointment booking, lead routing, and content automation.',
+  path: '/automation',
+});
 
 export default function AutomationPage() {
   return (

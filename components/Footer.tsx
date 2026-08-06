@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { SITE_BRAND, SITE_LEGAL_NAME } from '@/lib/site';
 
 export default function Footer() {
   return (
@@ -12,7 +13,7 @@ export default function Footer() {
           viewport={{ once: true }}
           className="text-[var(--muted)] text-sm"
         >
-          © David — All rights reserved
+          © {new Date().getFullYear()} {SITE_LEGAL_NAME} ({SITE_BRAND}). All rights reserved.
         </motion.p>
       </div>
     </footer>

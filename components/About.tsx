@@ -2,23 +2,24 @@
 
 import { motion } from 'framer-motion';
 import { Code2, Zap, Rocket } from 'lucide-react';
+import { SITE_BRAND, SITE_LEGAL_NAME } from '@/lib/site';
 
 export default function About() {
   const features = [
     {
       icon: Code2,
-      title: 'Full-Stack Development',
-      description: 'Building end-to-end solutions with modern frameworks and best practices.',
+      title: 'Full Stack Development',
+      description: 'Frontend and backend work with Next.js, React, Node, and Supabase.',
     },
     {
       icon: Zap,
       title: 'AI Integration',
-      description: 'Creating intelligent web and mobile applications powered by AI.',
+      description: 'Practical AI features inside web apps: chat, scoring, routing, and content tools.',
     },
     {
       icon: Rocket,
       title: 'SaaS MVPs',
-      description: 'Rapidly developing and deploying scalable SaaS products.',
+      description: 'Launch-ready MVPs with auth, billing hooks, and a codebase you can grow.',
     },
   ];
 
@@ -42,7 +43,6 @@ export default function About() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left Column - Bio */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -51,23 +51,20 @@ export default function About() {
             className="space-y-6"
           >
             <p className="text-lg text-gray-300 leading-relaxed">
-              I'm David, a passionate full-stack developer specializing in building
-              modern web applications, AI-powered solutions, and scalable SaaS products.
+              I&apos;m {SITE_LEGAL_NAME}. Online I go by {SITE_BRAND}. I work as a freelance full stack
+              developer on web apps, internal tools, and automation projects.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
-              With expertise in frontend and backend development, I create seamless
-              user experiences while ensuring robust, performant systems. I'm particularly
-              focused on integrating AI capabilities into web and mobile applications,
-              helping businesses leverage cutting-edge technology.
+              Most of my work sits in the Next.js and Supabase stack. I also build n8n and Zapier
+              workflows when a client needs leads routed, content scheduled, or support tickets handled
+              without manual copy paste.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
-              Whether it's setting up Supabase backends, developing Next.js applications,
-              or building complete SaaS MVPs, I bring a comprehensive approach to every
-              project.
+              I keep communication simple: clear scope, regular updates, and code you can hand to another
+              developer later if needed.
             </p>
           </motion.div>
 
-          {/* Right Column - Features */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -103,4 +100,3 @@ export default function About() {
     </section>
   );
 }
-

@@ -43,8 +43,8 @@ function StatItem({ label, value, suffix = '+', prefix = '' }: StatItemProps) {
       ref={ref}
       className="flex flex-1 items-center justify-center px-4 py-6 md:py-8 text-center min-h-[88px]"
     >
-      <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-wide text-gray-700 leading-snug">
-        <span className="text-[#0c1f4a]">{prefix}{count}{suffix}</span>
+      <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-wide text-[var(--stats-text)] leading-snug">
+        <span className="text-[var(--stats-accent)]">{prefix}{count}{suffix}</span>
         {' '}
         {label}
       </p>
@@ -63,7 +63,7 @@ export default function Stats() {
   return (
     <section
       aria-label="Portfolio highlights"
-      className="relative z-20 bg-white border-y border-gray-200 shadow-[0_8px_32px_rgba(0,0,0,0.12)]"
+      className="relative z-20 bg-[var(--stats-bg)] border-y border-[var(--border)] shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
     >
       <motion.div
         initial={{ opacity: 0, y: 12 }}

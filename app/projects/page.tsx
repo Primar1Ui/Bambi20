@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import PageShell from '@/components/PageShell';
 import ProjectSkeletonGrid from '@/components/skeletons/ProjectSkeletonGrid';
-import { SITE_URL } from '@/lib/site';
+import { createPageMetadata } from '@/lib/page-metadata';
 
 const Projects = dynamic(() => import('@/components/Projects'), {
   loading: () => (
@@ -19,17 +19,12 @@ const Projects = dynamic(() => import('@/components/Projects'), {
   ),
 });
 
-export const metadata: Metadata = {
-  title: 'Projects | David — Full-Stack & AI Web Developer',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Projects',
   description:
-    'Browse David\'s portfolio of web apps, SaaS products, AI integrations, and automation projects.',
-  openGraph: {
-    title: 'Projects | David — Full-Stack & AI Web Developer',
-    description:
-      'Browse David\'s portfolio of web apps, SaaS products, AI integrations, and automation projects.',
-    url: `${SITE_URL}/projects`,
-  },
-};
+    'Portfolio of web apps, SaaS tools, AI integrations, and automation projects by Bambi20.',
+  path: '/projects',
+});
 
 export default function ProjectsPage() {
   return (

@@ -39,7 +39,7 @@ export default function HireMeBanner() {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-sm md:text-base flex items-start sm:items-center gap-2 flex-1 min-w-0">
           <Rocket className="w-4 h-4 flex-shrink-0 mt-0.5 sm:mt-0" aria-hidden="true" />
-          <span>Available for new projects. Let&apos;s build something amazing together.</span>
+          <span>Open for freelance work. Send a brief on the contact page and I will reply within 24 hours.</span>
         </p>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <Link

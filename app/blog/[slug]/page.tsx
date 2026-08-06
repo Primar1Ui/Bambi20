@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { blogPosts, getPostBySlug } from '@/lib/blog';
-import { SITE_URL } from '@/lib/site';
+import { SITE_URL, SITE_BRAND } from '@/lib/site';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const post = getPostBySlug(slug);
   if (!post) return { title: 'Post not found' };
   return {
-    title: `${post.title} | David's Blog`,
+    title: `${post.title} | ${SITE_BRAND} Blog`,
     description: post.description,
     openGraph: {
       title: post.title,

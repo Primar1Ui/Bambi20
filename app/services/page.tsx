@@ -1,19 +1,14 @@
 import type { Metadata } from 'next';
 import PageShell from '@/components/PageShell';
 import Services from '@/components/Services';
-import { SITE_URL } from '@/lib/site';
+import { createPageMetadata } from '@/lib/page-metadata';
 
-export const metadata: Metadata = {
-  title: 'Services | David — Full-Stack & AI Web Developer',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Services',
   description:
-    'Services offered by David — full-stack development, SaaS MVPs, Supabase backends, AI integrations, and workflow automation.',
-  openGraph: {
-    title: 'Services | David — Full-Stack & AI Web Developer',
-    description:
-      'Services offered by David — full-stack development, SaaS MVPs, Supabase backends, AI integrations, and workflow automation.',
-    url: `${SITE_URL}/services`,
-  },
-};
+    'Services from Bambi20: full stack development, SaaS MVPs, Supabase backends, AI integrations, and workflow automation.',
+  path: '/services',
+});
 
 export default function ServicesPage() {
   return (
