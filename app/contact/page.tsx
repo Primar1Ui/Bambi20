@@ -13,7 +13,7 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function ContactPage() {
   return (
-    <PageShell>
+    <PageShell breadcrumbs={[{ label: 'Contact', path: '/contact' }]}>
       <Contact />
       <Newsletter />
     </PageShell>

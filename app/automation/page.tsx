@@ -12,7 +12,7 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function AutomationPage() {
   return (
-    <PageShell>
+    <PageShell breadcrumbs={[{ label: 'Automation', path: '/automation' }]}>
       <AutomationShowcase />
     </PageShell>
   );

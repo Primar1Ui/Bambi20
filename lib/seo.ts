@@ -5,10 +5,16 @@ import {
   SITE_GEO,
   SITE_GITHUB,
   SITE_LEGAL_NAME,
+  SITE_LINKEDIN,
   SITE_TELEGRAM,
   SITE_TITLE,
   SITE_URL,
 } from '@/lib/site';
+
+export type BreadcrumbItem = {
+  label: string;
+  path: string;
+};
 
 export const homeFaqs = [
   {
@@ -33,6 +39,23 @@ export const homeFaqs = [
   },
 ];
 
+export function personSameAs(): string[] {
+  const links = [SITE_GITHUB, SITE_TELEGRAM];
+  if (SITE_LINKEDIN) {
+    links.push(SITE_LINKEDIN);
+  }
+  return links;
+}
+
+export function authorPersonSchema() {
+  return {
+    '@type': 'Person',
+    name: SITE_LEGAL_NAME,
+    alternateName: SITE_BRAND,
+    url: SITE_URL,
+  };
+}
+
 export function personSchema() {
   return {
     '@context': 'https://schema.org',
@@ -42,7 +65,7 @@ export function personSchema() {
     jobTitle: 'Full Stack Web Developer',
     url: SITE_URL,
     email: `mailto:${SITE_EMAIL}`,
-    sameAs: [SITE_GITHUB, SITE_TELEGRAM],
+    sameAs: personSameAs(),
     knowsAbout: [
       'Next.js',
       'React',
@@ -73,11 +96,7 @@ export function websiteSchema() {
     url: SITE_URL,
     description: SITE_DESCRIPTION,
     inLanguage: SITE_GEO.languages,
-    author: {
-      '@type': 'Person',
-      name: SITE_LEGAL_NAME,
-      alternateName: SITE_BRAND,
-    },
+    author: authorPersonSchema(),
   };
 }
 
@@ -99,10 +118,30 @@ export function professionalServiceSchema() {
       'Workflow Automation',
       'AI Application Integration',
     ],
-    founder: {
-      '@type': 'Person',
-      name: SITE_LEGAL_NAME,
+    founder: authorPersonSchema(),
+  };
+}
+
+export function localBusinessSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: SITE_BRAND,
+    alternateName: SITE_LEGAL_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    email: SITE_EMAIL,
+    image: `${SITE_URL}/images/og-image.png`,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'NG',
     },
+    areaServed: SITE_GEO.countries.map((code) => ({
+      '@type': 'Country',
+      name: code,
+    })),
+    founder: authorPersonSchema(),
+    sameAs: personSameAs(),
   };
 }
 
@@ -118,5 +157,48 @@ export function faqSchema(faqs: { question: string; answer: string }[]) {
         text: item.answer,
       },
     })),
+  };
+}
+
+export function breadcrumbSchema(items: BreadcrumbItem[]) {
+  const trail = [{ label: 'Home', path: '/' }, ...items.filter((item) => item.path !== '/')];
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.label,
+      item: item.path === '/' ? SITE_URL : `${SITE_URL}${item.path}`,
+    })),
+  };
+}
+
+export function blogPostingSchema(post: {
+  title: string;
+  description: string;
+  date: string;
+  slug: string;
+  tags: string[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    author: authorPersonSchema(),
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_BRAND,
+      url: SITE_URL,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/blog/${post.slug}`,
+    },
+    image: `${SITE_URL}/images/og-image.png`,
+    keywords: post.tags.join(', '),
   };
 }

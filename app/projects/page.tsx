@@ -28,7 +28,7 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function ProjectsPage() {
   return (
-    <PageShell>
+    <PageShell breadcrumbs={[{ label: 'Projects', path: '/projects' }]}>
       <Projects />
     </PageShell>
   );

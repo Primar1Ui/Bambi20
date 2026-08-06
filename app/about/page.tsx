@@ -15,7 +15,7 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function AboutPage() {
   return (
-    <PageShell>
+    <PageShell breadcrumbs={[{ label: 'About', path: '/about' }]}>
       <HashScroll />
       <About />
       <CurrentWork />

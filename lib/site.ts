@@ -15,6 +15,9 @@ export const SITE_EMAIL = 'davidtosin306@gmail.com';
 export const SITE_GITHUB = 'https://github.com/Primar1Ui';
 export const SITE_TELEGRAM = 'https://t.me/mar_gdd';
 
+/** Optional — set NEXT_PUBLIC_LINKEDIN_URL in env to include in Person sameAs */
+export const SITE_LINKEDIN = process.env.NEXT_PUBLIC_LINKEDIN_URL?.trim() ?? '';
+
 /** Primary markets for GEO signals */
 export const SITE_GEO = {
   countries: ['NG', 'US', 'GB', 'CA', 'AU'],

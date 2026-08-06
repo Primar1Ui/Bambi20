@@ -3,7 +3,6 @@ import PageShell from '@/components/PageShell';
 import CaseStudyCard from '@/components/CaseStudyCard';
 import { caseStudies } from '@/lib/caseStudies';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import { createPageMetadata } from '@/lib/page-metadata';
 
 export const metadata: Metadata = createPageMetadata({
@@ -15,17 +14,9 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function CaseStudiesPage() {
   return (
-    <PageShell>
+    <PageShell breadcrumbs={[{ label: 'Case Studies', path: '/case-studies' }]}>
       <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] rounded px-2 py-1"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </Link>
-
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
               Case <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Studies</span>

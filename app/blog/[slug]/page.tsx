@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { blogPosts, getPostBySlug } from '@/lib/blog';
-import { SITE_URL, SITE_BRAND } from '@/lib/site';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { blogPostingSchema } from '@/lib/seo';
+import { SITE_URL, SITE_BRAND, SITE_LEGAL_NAME } from '@/lib/site';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${SITE_URL}/blog/${post.slug}`,
       type: 'article',
       publishedTime: post.date,
-      authors: [post.author],
+      authors: [SITE_LEGAL_NAME],
       tags: post.tags,
       images: [{ url: '/images/og-image.png', width: 1200, height: 630, alt: post.title }],
     },
@@ -123,30 +124,24 @@ export default async function BlogPostPage({ params }: PageProps) {
         type="application/ld+json"
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BlogPosting',
-            headline: post.title,
-            description: post.description,
-            datePublished: post.date,
-            author: {
-              '@type': 'Person',
-              name: post.author,
-              url: SITE_URL,
-            },
-            mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
-            image: `${SITE_URL}/images/og-image.png`,
-            keywords: post.tags.join(', '),
-          }),
+          __html: JSON.stringify(
+            blogPostingSchema({
+              title: post.title,
+              description: post.description,
+              date: post.date,
+              slug: post.slug,
+              tags: post.tags,
+            })
+          ),
         }}
       />
       <article className="max-w-3xl mx-auto">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors text-sm font-medium mb-8"
-        >
-          ← Back to blog
-        </Link>
+        <Breadcrumbs
+          items={[
+            { label: 'Blog', path: '/blog' },
+            { label: post.title, path: `/blog/${post.slug}` },
+          ]}
+        />
 
         <header className="mb-10">
           <div className="flex flex-wrap gap-2 mb-4">
@@ -164,7 +159,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           </h1>
           <p className="text-lg text-gray-400 mb-2">{post.description}</p>
           <p className="text-sm text-gray-500">
-            {post.date} · {post.author}
+            {post.date} · {SITE_LEGAL_NAME} ({SITE_BRAND})
           </p>
         </header>
 

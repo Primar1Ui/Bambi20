@@ -40,14 +40,14 @@ Track progress phase by phase. Mark items `[x]` when shipped to `main`.
 
 ---
 
-## Phase 3 — Structured data (Medium) — SUSPENDED
+## Phase 3 — Structured data (Medium)
 
 | # | Task | Files | Status |
 |---|------|--------|--------|
-| 3.1 | `BreadcrumbList` JSON-LD on inner pages | `lib/seo.ts`, `components/Breadcrumbs.tsx`, page layouts | [ ] paused |
-| 3.2 | `BlogPosting` author: Oluwatosin David + `alternateName: Bambi20` | `app/blog/[slug]/page.tsx`, `lib/seo.ts` | [ ] paused |
-| 3.3 | `LocalBusiness` schema (Nigeria focus) | `lib/seo.ts`, `app/layout.tsx` | [ ] paused |
-| 3.4 | LinkedIn in Person `sameAs` when URL provided | `lib/site.ts`, `lib/seo.ts` | [ ] paused |
+| 3.1 | `BreadcrumbList` JSON-LD on inner pages | `lib/seo.ts`, `components/Breadcrumbs.tsx`, page layouts | [x] |
+| 3.2 | `BlogPosting` author: Oluwatosin David + `alternateName: Bambi20` | `app/blog/[slug]/page.tsx`, `lib/seo.ts` | [x] |
+| 3.3 | `LocalBusiness` schema (Nigeria focus) | `lib/seo.ts`, `app/layout.tsx` | [x] |
+| 3.4 | LinkedIn in Person `sameAs` when URL provided | `lib/site.ts`, `lib/seo.ts`, `.env.example` | [x] |
 
 **Exit criteria:** Rich results validate in [Google Rich Results Test](https://search.google.com/test/rich-results).
 
@@ -96,9 +96,9 @@ Track progress phase by phase. Mark items `[x]` when shipped to `main`.
 Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 (optional)
 ```
 
-**Current focus:** Homepage rebrand (DaneBuilds-style layout)
+**Current focus:** Phase 4 — conversion and content (`/hire`, blog/case study rewrites)
 
-**Suspended:** Phase 3 (Structured data) until later
+**Completed:** Phase 3 (Structured data)
 
 ---
 

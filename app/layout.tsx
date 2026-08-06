@@ -19,6 +19,7 @@ import {
   personSchema,
   websiteSchema,
   professionalServiceSchema,
+  localBusinessSchema,
   faqSchema,
   homeFaqs,
 } from '@/lib/seo';
@@ -130,6 +131,11 @@ export default function RootLayout({
           type="application/ld+json"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceSchema()) }}
+        />
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }}
         />
         <script
           type="application/ld+json"
