@@ -4,11 +4,40 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { homepageSelectedAutomations } from '@/lib/automations';
 import { projects } from '@/lib/data';
 
-export default function HomeSelectedWork() {
-  const selected = projects.slice(0, 4);
+const homepageWebApps = projects.filter((project) =>
+  ['Portfolio Website', 'BaxAuto Website'].includes(project.title)
+);
 
+const selectedWork = [
+  ...homepageSelectedAutomations.map((automation) => ({
+    title: automation.title,
+    description: automation.description,
+    tech: automation.tags,
+    image: automation.image,
+    imageAlt: automation.alt,
+    eyebrow: automation.tags[0],
+    href: '/automation',
+    cta: 'View automation details',
+  })),
+  ...homepageWebApps.map((project) => ({
+    title: project.title,
+    description: project.description,
+    tech: project.tech,
+    image: project.image ?? '/images/projects/placeholder.svg',
+    imageAlt: `${project.title} preview`,
+    eyebrow:
+      'metrics' in project && Array.isArray(project.metrics)
+        ? project.metrics[0]
+        : project.tech[0],
+    href: '/projects',
+    cta: 'View project details',
+  })),
+];
+
+export default function HomeSelectedWork() {
   return (
     <section
       id="selected-work"
@@ -35,68 +64,67 @@ export default function HomeSelectedWork() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-          {selected.map((project, index) => {
-            const image = project.image ?? '/images/projects/placeholder.svg';
-            const metrics =
-              'metrics' in project && Array.isArray(project.metrics)
-                ? project.metrics
-                : project.tech;
-
-            return (
-              <motion.article
-                key={project.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.06, duration: 0.4 }}
-                className="group rounded-2xl border border-[var(--border)] bg-[var(--surface-solid)] overflow-hidden hover:border-blue-500/40 transition-colors"
-              >
-                <div className="relative aspect-video bg-[var(--surface)]">
-                  <Image
-                    src={image}
-                    alt={`${project.title} preview`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                </div>
-                <div className="p-6">
-                  {metrics[0] && (
-                    <p className="text-xs font-medium text-[var(--muted)] mb-2">{metrics[0]}</p>
-                  )}
-                  <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">{project.title}</h3>
-                  <p className="text-sm text-[var(--muted)] leading-relaxed mb-4 line-clamp-3">
-                    {project.description}
-                  </p>
-                  <ul className="flex flex-wrap gap-2 mb-5">
-                    {project.tech.slice(0, 4).map((tag) => (
-                      <li
-                        key={tag}
-                        className="text-xs px-2.5 py-1 rounded-md border border-[var(--border)] text-[var(--muted-strong)]"
-                      >
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/projects"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-500 hover:text-blue-400 transition-colors"
-                  >
-                    View project details
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
-                </div>
-              </motion.article>
-            );
-          })}
+          {selectedWork.map((item, index) => (
+            <motion.article
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.06, duration: 0.4 }}
+              className="group rounded-2xl border border-[var(--border)] bg-[var(--surface-solid)] overflow-hidden hover:border-blue-500/40 transition-colors"
+            >
+              <div className="relative aspect-video bg-[var(--surface)]">
+                <Image
+                  src={item.image}
+                  alt={item.imageAlt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+              <div className="p-6">
+                {item.eyebrow && (
+                  <p className="text-xs font-medium text-[var(--muted)] mb-2">{item.eyebrow}</p>
+                )}
+                <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">{item.title}</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed mb-4 line-clamp-3">
+                  {item.description}
+                </p>
+                <ul className="flex flex-wrap gap-2 mb-5">
+                  {item.tech.slice(0, 4).map((tag) => (
+                    <li
+                      key={tag}
+                      className="text-xs px-2.5 py-1 rounded-md border border-[var(--border)] text-[var(--muted-strong)]"
+                    >
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={item.href}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-500 hover:text-blue-400 transition-colors"
+                >
+                  {item.cta}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+            </motion.article>
+          ))}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/projects"
             className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--foreground)] border border-[var(--border)] rounded-lg px-5 py-2.5 hover:bg-[var(--surface-solid)] transition-colors"
           >
             See all projects
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/automation"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--foreground)] border border-[var(--border)] rounded-lg px-5 py-2.5 hover:bg-[var(--surface-solid)] transition-colors"
+          >
+            See all automations
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

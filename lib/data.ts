@@ -42,30 +42,6 @@ export const skills = {
 
 export const projects = [
   {
-    title: "AI SaaS Dashboard",
-    description: "A modern AI-powered SaaS platform with authentication and analytics.",
-    tech: ["Next.js", "Supabase", "Tailwind"],
-    category: "full-stack",
-    github: "https://github.com/Primar1Ui/ai-web-canvas",
-    live: "https://ai-web-canvas.vercel.app/",
-    role: "Full-stack developer",
-    results: "Implemented authentication, dashboard analytics, and AI-powered features for early-stage users.",
-    image: "/images/projects/ai-saas-dashboard.png",
-    featured: true,
-    metrics: ["Auth + analytics", "AI-assisted workflows", "Production deploy"],
-  },
-  {
-    title: "Finance Tracker App",
-    description: "Custom finance and budgeting tracker with real-time data.",
-    tech: ["React", "Supabase"],
-    category: "full-stack",
-    github: "https://github.com/Primar1Ui/dapper-access",
-    live: "https://dapper-access.vercel.app/",
-    role: "Frontend & backend developer",
-    results: "Built real-time expense tracking with Supabase, improving client visibility into cash flow.",
-    image: "/images/projects/finance-tracker.png",
-  },
-  {
     title: "Portfolio Website",
     description: "High-performance developer portfolio optimized for SEO.",
     tech: ["Next.js", "Framer Motion"],
@@ -97,6 +73,8 @@ export const projects = [
     role: "Full-stack developer",
     results: "Built a smart spend dashboard for expense tracking and budget visibility.",
     image: "/images/projects/smart-spend-dashboard.png",
+    featured: true,
+    metrics: ["Expense tracking", "Budget dashboard", "Production deploy"],
   },
   {
     title: "Refined Man",
