@@ -1,14 +1,20 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useLocale } from '@/contexts/LocaleContext';
-import { mainNavItems, isNavItemActive, type NavItem } from '@/lib/navigation';
+import {
+  navEntries,
+  isNavItemActive,
+  isDropdownActive,
+  type NavItem,
+  type NavDropdown,
+} from '@/lib/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
 
 function navLinkClass(isActive: boolean) {
@@ -19,6 +25,158 @@ function navLinkClass(isActive: boolean) {
       ? 'text-white bg-white/10'
       : 'text-gray-300 hover:text-white hover:bg-white/5',
   ].join(' ');
+}
+
+function mobileLinkClass(isActive: boolean) {
+  return [
+    'block w-full text-left min-h-11 text-base py-3 px-3 rounded-lg transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c]',
+    isActive ? 'text-cyan-300 bg-white/10' : 'text-gray-100 hover:text-cyan-300 hover:bg-white/5',
+  ].join(' ');
+}
+
+type DesktopDropdownProps = {
+  dropdown: NavDropdown;
+  isActive: boolean;
+  isItemActive: (item: NavItem) => boolean;
+  t: (key: string) => string;
+  onNavigate: () => void;
+};
+
+function DesktopDropdown({ dropdown, isActive, isItemActive, t, onNavigate }: DesktopDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        className={`${navLinkClass(isActive)} gap-1`}
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        {t(dropdown.labelKey)}
+        <ChevronDown
+          className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+          aria-hidden="true"
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-0 top-full pt-2 min-w-[200px] z-50"
+            role="menu"
+          >
+            <div className="rounded-xl border border-gray-700/80 bg-[#0c1628]/98 backdrop-blur-md shadow-xl py-1.5">
+              {dropdown.items.map((item) => {
+                const active = isItemActive(item);
+                return (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    role="menuitem"
+                    onClick={() => {
+                      setOpen(false);
+                      onNavigate();
+                    }}
+                    className={`block px-4 py-2.5 text-sm transition-colors ${
+                      active
+                        ? 'text-cyan-300 bg-white/10'
+                        : 'text-gray-200 hover:text-white hover:bg-white/5'
+                    }`}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {t(item.key)}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+type MobileDropdownProps = {
+  dropdown: NavDropdown;
+  isItemActive: (item: NavItem) => boolean;
+  t: (key: string) => string;
+  onNavigate: () => void;
+};
+
+function MobileDropdown({ dropdown, isItemActive, t, onNavigate }: MobileDropdownProps) {
+  const [expanded, setExpanded] = useState(false);
+  const groupActive = dropdown.items.some((item) => isItemActive(item));
+
+  return (
+    <div className="border-b border-gray-800/80 last:border-b-0">
+      <button
+        type="button"
+        className={`flex w-full items-center justify-between min-h-11 py-3 px-3 rounded-lg text-lg transition-colors ${
+          groupActive ? 'text-cyan-300' : 'text-gray-100'
+        }`}
+        aria-expanded={expanded}
+        onClick={() => setExpanded((prev) => !prev)}
+      >
+        {t(dropdown.labelKey)}
+        <ChevronDown
+          className={`w-5 h-5 transition-transform ${expanded ? 'rotate-180' : ''}`}
+          aria-hidden="true"
+        />
+      </button>
+      {expanded && (
+        <div className="pb-2 pl-3 space-y-1">
+          {dropdown.items.map((item) => {
+            const active = isItemActive(item);
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                onClick={onNavigate}
+                className={mobileLinkClass(active)}
+                aria-current={active ? 'page' : undefined}
+              >
+                {t(item.key)}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function Navbar() {
@@ -82,33 +240,77 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  const isItemActive = useMemo(
-    () => (item: NavItem) => isNavItemActive(item, pathname, hash),
+  const isItemActive = useCallback(
+    (item: NavItem) => isNavItemActive(item, pathname, hash),
     [hash, pathname]
   );
 
-  const renderNavLink = (item: NavItem, mobile = false) => {
-    const isActive = isItemActive(item);
-    const className = mobile
-      ? [
-          'block w-full text-left min-h-11 text-lg py-3 px-3 rounded-lg transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c]',
-          isActive ? 'text-cyan-300 bg-white/10' : 'text-gray-100 hover:text-cyan-300 hover:bg-white/5',
-        ].join(' ')
-      : navLinkClass(isActive);
+  const closeMenu = () => setIsOpen(false);
 
-    return (
-      <Link
-        key={item.key}
-        href={item.href}
-        onClick={() => setIsOpen(false)}
-        className={className}
-        aria-current={isActive ? 'page' : undefined}
-      >
-        {t(item.key)}
-      </Link>
-    );
-  };
+  const desktopNav = useMemo(
+    () =>
+      navEntries.map((entry) => {
+        if (entry.type === 'link') {
+          const { item } = entry;
+          const active = isItemActive(item);
+          return (
+            <Link
+              key={item.key}
+              href={item.href}
+              onClick={closeMenu}
+              className={navLinkClass(active)}
+              aria-current={active ? 'page' : undefined}
+            >
+              {t(item.key)}
+            </Link>
+          );
+        }
+
+        return (
+          <DesktopDropdown
+            key={entry.labelKey}
+            dropdown={entry}
+            isActive={isDropdownActive(entry.items, pathname, hash)}
+            isItemActive={isItemActive}
+            t={t}
+            onNavigate={closeMenu}
+          />
+        );
+      }),
+    [hash, isItemActive, pathname, t]
+  );
+
+  const mobileNav = useMemo(
+    () =>
+      navEntries.map((entry) => {
+        if (entry.type === 'link') {
+          const { item } = entry;
+          const active = isItemActive(item);
+          return (
+            <Link
+              key={item.key}
+              href={item.href}
+              onClick={closeMenu}
+              className={mobileLinkClass(active)}
+              aria-current={active ? 'page' : undefined}
+            >
+              {t(item.key)}
+            </Link>
+          );
+        }
+
+        return (
+          <MobileDropdown
+            key={entry.labelKey}
+            dropdown={entry}
+            isItemActive={isItemActive}
+            t={t}
+            onNavigate={closeMenu}
+          />
+        );
+      }),
+    [isItemActive, t]
+  );
 
   return (
     <>
@@ -134,7 +336,7 @@ export default function Navbar() {
             >
               <Link
                 href="/"
-                onClick={() => setIsOpen(false)}
+                onClick={closeMenu}
                 className="inline-flex items-center gap-2 min-h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070f1c]"
                 aria-label="David — home"
                 aria-current={pathname === '/' ? 'page' : undefined}
@@ -150,8 +352,8 @@ export default function Navbar() {
               </Link>
             </motion.div>
 
-            <div className="hidden md:flex items-center gap-1 lg:gap-2 overflow-x-auto max-w-[70vw] lg:max-w-none">
-              {mainNavItems.map((item) => renderNavLink(item))}
+            <div className="hidden md:flex items-center gap-1 lg:gap-2">
+              {desktopNav}
               <ThemeToggle />
             </div>
 
@@ -178,7 +380,7 @@ export default function Navbar() {
             exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
             transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.2 }}
             className="md:hidden fixed inset-0 z-[90] bg-[#070f1c]"
-            onClick={() => setIsOpen(false)}
+            onClick={closeMenu}
             aria-hidden={!isOpen}
           >
             <motion.div
@@ -199,7 +401,7 @@ export default function Navbar() {
                   <span className="text-sm font-medium text-gray-300">{t('nav.theme')}</span>
                   <ThemeToggle />
                 </div>
-                {mainNavItems.map((item) => renderNavLink(item, true))}
+                {mobileNav}
               </div>
             </motion.div>
           </motion.div>

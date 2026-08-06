@@ -29,7 +29,7 @@ export default function LandingCTA() {
   return (
     <section
       aria-labelledby="explore-heading"
-      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 border-t border-gray-800/80"
+      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 border-t border-[var(--border)]"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div

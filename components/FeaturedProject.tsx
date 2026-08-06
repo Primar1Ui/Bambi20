@@ -17,7 +17,7 @@ export default function FeaturedProject() {
   return (
     <section
       id="featured-project"
-      className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent to-gray-900/50"
+      className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-[var(--surface-solid)]/40 border-y border-[var(--border)]"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div

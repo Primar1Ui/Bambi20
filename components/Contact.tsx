@@ -2,7 +2,7 @@
 
 import { useState, FormEvent, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Mail, Phone, Loader2, CheckCircle2 } from 'lucide-react';
+import { Send, Mail, Phone, Loader2, CheckCircle2, Github, MessageCircle } from 'lucide-react';
 import { trackFunnel } from '@/lib/analytics';
 import { whatsappContacts } from '@/lib/data';
 
@@ -233,6 +233,68 @@ export default function Contact() {
                     >
                       davidtosin306@gmail.com
                     </a>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                    <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Telegram</p>
+                    <a
+                      href="https://t.me/mar_gdd"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackFunnel.telegramClick('contact')}
+                      className="text-white hover:text-blue-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] rounded px-1"
+                    >
+                      @mar_gdd
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                    <Github className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">GitHub</p>
+                    <a
+                      href="https://github.com/Primar1Ui"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackFunnel.githubClick('contact')}
+                      className="text-white hover:text-blue-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] rounded px-1"
+                    >
+                      github.com/Primar1Ui
+                    </a>
+                  </div>
+                </div>
+                <div className="pt-2 border-t border-gray-800">
+                  <p className="text-gray-400 text-sm mb-3">Quick actions</p>
+                  <div className="flex flex-wrap gap-3">
+                    <a
+                      href="mailto:davidtosin306@gmail.com"
+                      onClick={() => trackFunnel.emailClick('contact-quick')}
+                      className="inline-flex items-center gap-2 min-h-10 px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 transition-colors text-sm font-medium"
+                    >
+                      <Mail className="w-4 h-4" aria-hidden="true" />
+                      Email
+                    </a>
+                    {whatsappContacts.map((contact) => (
+                      <a
+                        key={contact.id}
+                        href={contact.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackFunnel.whatsappClick(`contact-quick-${contact.id}`)}
+                        className="inline-flex items-center gap-2 min-h-10 px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 transition-colors text-sm font-medium"
+                      >
+                        <MessageCircle className="w-4 h-4" aria-hidden="true" />
+                        WhatsApp {contact.countryCode}
+                      </a>
+                    ))}
                   </div>
                 </div>
               </div>

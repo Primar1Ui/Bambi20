@@ -43,8 +43,8 @@ function StatItem({ label, value, suffix = '+', prefix = '' }: StatItemProps) {
       ref={ref}
       className="flex flex-1 items-center justify-center px-4 py-6 md:py-8 text-center min-h-[88px]"
     >
-      <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-wide text-gray-700 leading-snug">
-        <span className="text-[#0c1f4a]">{prefix}{count}{suffix}</span>
+      <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-wide text-[var(--muted)] leading-snug">
+        <span className="text-blue-400">{prefix}{count}{suffix}</span>
         {' '}
         {label}
       </p>
@@ -63,7 +63,7 @@ export default function Stats() {
   return (
     <section
       aria-label="Portfolio highlights"
-      className="relative z-20 bg-white border-y border-gray-200 shadow-[0_8px_32px_rgba(0,0,0,0.12)]"
+      className="relative z-20 bg-[#0a1628] border-y border-[var(--border)]"
     >
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -72,7 +72,7 @@ export default function Stats() {
         transition={{ duration: 0.45 }}
         className="max-w-7xl mx-auto"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[var(--border)]">
           {statItems.map((item) => (
             <StatItem key={item.label} {...item} />
           ))}

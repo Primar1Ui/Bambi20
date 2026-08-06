@@ -8,18 +8,40 @@ export type NavItem = {
   matchNested?: boolean;
 };
 
-export const mainNavItems: NavItem[] = [
-  { key: 'nav.home', href: '/', matchPath: '/' },
-  { key: 'nav.about', href: '/about', matchPath: '/about', matchHash: '' },
-  { key: 'nav.skills', href: '/about#skills', matchPath: '/about', matchHash: '#skills' },
-  { key: 'nav.projects', href: '/projects', matchPath: '/projects' },
+export type NavDropdown = {
+  type: 'dropdown';
+  labelKey: string;
+  items: NavItem[];
+};
+
+export type NavLink = {
+  type: 'link';
+  item: NavItem;
+};
+
+export type NavEntry = NavLink | NavDropdown;
+
+const servicesDropdownItems: NavItem[] = [
   { key: 'nav.services', href: '/services', matchPath: '/services' },
   { key: 'nav.automation', href: '/automation', matchPath: '/automation' },
-  { key: 'nav.testimonials', href: '/testimonials', matchPath: '/testimonials' },
-  { key: 'nav.caseStudies', href: '/case-studies', matchPath: '/case-studies' },
-  { key: 'nav.blog', href: '/blog', matchPath: '/blog', matchNested: true },
-  { key: 'nav.contact', href: '/contact', matchPath: '/contact' },
+  { key: 'nav.projects', href: '/projects', matchPath: '/projects' },
+  { key: 'nav.skills', href: '/about#skills', matchPath: '/about', matchHash: '#skills' },
 ];
+
+export const navEntries: NavEntry[] = [
+  { type: 'link', item: { key: 'nav.home', href: '/', matchPath: '/' } },
+  { type: 'link', item: { key: 'nav.about', href: '/about', matchPath: '/about', matchHash: '' } },
+  { type: 'dropdown', labelKey: 'nav.services', items: servicesDropdownItems },
+  { type: 'link', item: { key: 'nav.testimonials', href: '/testimonials', matchPath: '/testimonials' } },
+  { type: 'link', item: { key: 'nav.caseStudies', href: '/case-studies', matchPath: '/case-studies' } },
+  { type: 'link', item: { key: 'nav.blog', href: '/blog', matchPath: '/blog', matchNested: true } },
+  { type: 'link', item: { key: 'nav.contact', href: '/contact', matchPath: '/contact' } },
+];
+
+/** Flat list for sitemap, legacy redirects, etc. */
+export const mainNavItems: NavItem[] = navEntries.flatMap((entry) =>
+  entry.type === 'link' ? [entry.item] : entry.items
+);
 
 /** Legacy homepage hash → new route (bookmarks from single-page era) */
 export const legacyHashRoutes: Record<string, string> = {
@@ -54,4 +76,8 @@ export function isNavItemActive(
   if (item.matchHash === '') return hash !== '#skills';
 
   return true;
+}
+
+export function isDropdownActive(items: NavItem[], pathname: string, hash: string): boolean {
+  return items.some((item) => isNavItemActive(item, pathname, hash));
 }

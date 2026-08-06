@@ -9,7 +9,7 @@ export default function LatestBlogTeaser() {
   return (
     <section
       aria-labelledby="latest-post-heading"
-      className="py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-t border-gray-800/80"
+      className="py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-t border-[var(--border)]"
     >
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
