@@ -4,41 +4,53 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
+const HEADLINE_LINES = [
+  'Modern Web Apps. AI Integrations.',
+  'Workflows That Scale.',
+];
+
 export default function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
-    <section
-      id="home"
-      className="relative overflow-hidden bg-[#040810]"
-    >
-      {/* Bokeh depth — matches the asset edges on wide viewports */}
-      <div
-        className="absolute inset-0 opacity-90 bg-[radial-gradient(ellipse_at_18%_22%,rgba(37,99,235,0.22),transparent_42%),radial-gradient(ellipse_at_82%_18%,rgba(59,130,246,0.16),transparent_38%),radial-gradient(ellipse_at_50%_88%,rgba(15,23,42,0.95),transparent_55%)]"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 opacity-[0.35] bg-[radial-gradient(circle_at_12%_40%,rgba(96,165,250,0.12)_0%,transparent_28%),radial-gradient(circle_at_88%_55%,rgba(59,130,246,0.1)_0%,transparent_24%),radial-gradient(circle_at_45%_30%,rgba(147,197,253,0.08)_0%,transparent_32%)]"
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10 flex items-center justify-center px-4 sm:px-6 pt-24 md:pt-28 pb-10 md:pb-14 min-h-[min(88vh,920px)]">
+    <section id="home" className="relative overflow-hidden">
+      <div className="relative z-10 flex flex-col items-center justify-center px-3 sm:px-6 pt-20 sm:pt-24 md:pt-28 pb-10 sm:pb-14 md:pb-16">
         <motion.div
-          initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.7, ease: 'easeOut' }}
-          className="relative w-full max-w-[min(920px,92vw)] aspect-[16/10] sm:aspect-[16/9]"
+          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' }}
+          className="w-full flex justify-center"
         >
-          <h1 className="sr-only">David — Full-Stack, AI Web Apps, Automation</h1>
           <Image
-            src="/images/hero-brand.png"
-            alt="David — metallic logo, full-stack, AI web apps, and automation"
-            fill
+            src="/images/hero-brand-cutout.png"
+            alt="David — full-stack, AI web apps, and automation"
+            width={960}
+            height={540}
             priority
-            sizes="(max-width: 768px) 92vw, 920px"
-            className="object-contain object-center drop-shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
+            sizes="(max-width: 640px) 86vw, (max-width: 1024px) 72vw, 720px"
+            className="w-full max-w-[min(520px,86vw)] sm:max-w-[min(640px,80vw)] md:max-w-[min(720px,72vw)] h-auto"
           />
         </motion.div>
+
+        <motion.h1
+          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.15, duration: 0.5 }}
+          className="mt-3 sm:mt-4 md:mt-5 w-full max-w-5xl px-1 sm:px-2 text-center font-[Oswald,sans-serif] font-bold uppercase tracking-[0.04em] sm:tracking-wide text-white leading-[1.12] text-balance"
+        >
+          {HEADLINE_LINES.map((line, index) => (
+            <span
+              key={line}
+              className={`block ${
+                index === 0
+                  ? 'text-base leading-snug sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.65rem]'
+                  : 'text-[1.35rem] sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3rem] mt-1 sm:mt-1.5 md:mt-2'
+              }`}
+            >
+              {line}
+            </span>
+          ))}
+        </motion.h1>
       </div>
     </section>
   );
