@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { blogPosts, getPostBySlug } from '@/lib/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import BlogAuthorSidebar from '@/components/BlogAuthorSidebar';
 import { blogPostingSchema } from '@/lib/seo';
 import { SITE_URL, SITE_BRAND, SITE_LEGAL_NAME } from '@/lib/site';
 
@@ -45,11 +46,11 @@ function renderInline(text: string) {
     .filter(Boolean)
     .map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={index} className="font-semibold text-gray-300">{part.slice(2, -2)}</strong>;
+        return <strong key={index}>{part.slice(2, -2)}</strong>;
       }
       if (part.startsWith('`') && part.endsWith('`')) {
         return (
-          <code key={index} className="rounded bg-gray-800 px-1.5 py-0.5 text-sm text-cyan-300">
+          <code key={index} className="rounded bg-[var(--surface)] px-1.5 py-0.5 text-sm">
             {part.slice(1, -1)}
           </code>
         );
@@ -70,12 +71,11 @@ function renderContent(content: string) {
   const flushList = () => {
     if (!listType || listItems.length === 0) return;
     const items = listItems.map((item, index) => <li key={index}>{renderInline(item)}</li>);
-    const className = 'space-y-2 text-gray-400 mb-5 pl-6';
     elements.push(
       listType === 'ordered' ? (
-        <ol key={elements.length} className={`list-decimal ${className}`}>{items}</ol>
+        <ol key={elements.length}>{items}</ol>
       ) : (
-        <ul key={elements.length} className={`list-disc ${className}`}>{items}</ul>
+        <ul key={elements.length}>{items}</ul>
       )
     );
     listType = null;
@@ -89,9 +89,7 @@ function renderContent(content: string) {
     if (line.startsWith('## ')) {
       flushList();
       elements.push(
-        <h2 key={elements.length} className="text-2xl font-bold text-white mt-8 mb-4">
-          {renderInline(line.slice(3))}
-        </h2>
+        <h2 key={elements.length}>{renderInline(line.slice(3))}</h2>
       );
     } else if (orderedMatch || unorderedMatch) {
       const nextType: 'ordered' | 'unordered' = orderedMatch ? 'ordered' : 'unordered';
@@ -101,9 +99,7 @@ function renderContent(content: string) {
     } else if (line.trim()) {
       flushList();
       elements.push(
-        <p key={elements.length} className="text-gray-400 mb-4 leading-relaxed">
-          {renderInline(line)}
-        </p>
+        <p key={elements.length}>{renderInline(line)}</p>
       );
     } else {
       flushList();
@@ -135,7 +131,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           ),
         }}
       />
-      <article className="max-w-3xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <Breadcrumbs
           items={[
             { label: 'Blog', path: '/blog' },
@@ -143,30 +139,36 @@ export default async function BlogPostPage({ params }: PageProps) {
           ]}
         />
 
-        <header className="mb-10">
-          <div className="flex flex-wrap gap-2 mb-4">
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {post.title}
-          </h1>
-          <p className="text-lg text-gray-400 mb-2">{post.description}</p>
-          <p className="text-sm text-gray-500">
-            {post.date} · {SITE_LEGAL_NAME} ({SITE_BRAND})
-          </p>
-        </header>
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-12 lg:items-start">
+          <article>
+            <header className="mb-10 border-b border-[var(--border)] pb-8">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2 py-1 text-xs rounded-md border border-[var(--border)] text-[var(--muted-strong)]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--foreground)] mb-4 leading-tight">
+                {post.title}
+              </h1>
+              <p className="text-lg text-[var(--muted)] mb-2">{post.description}</p>
+              <p className="text-sm text-[var(--muted)]">
+                <time dateTime={post.date}>{post.date}</time> · {SITE_LEGAL_NAME} ({SITE_BRAND})
+              </p>
+            </header>
 
-        <div className="prose prose-invert max-w-none">
-          {renderContent(post.content)}
+            <div className="blog-prose max-w-none">{renderContent(post.content)}</div>
+          </article>
+
+          <aside className="mt-10 lg:mt-0 lg:sticky lg:top-24">
+            <BlogAuthorSidebar />
+          </aside>
         </div>
-      </article>
+      </div>
     </main>
   );
 }

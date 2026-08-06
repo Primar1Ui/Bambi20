@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Bot, GitBranch, Workflow, Boxes, Users, CalendarCheck, Sparkles, FileSpreadsheet, CalendarDays, BellRing } from 'lucide-react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { automations } from '@/lib/automations';
+import SectionHeading from '@/components/SectionHeading';
 
 const automationIcons = {
   'AI Appointment Booking Assistant': CalendarDays,
@@ -30,27 +31,11 @@ export default function AutomationShowcase() {
       className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 border-y border-gray-800/50"
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: reduce ? 1 : 0, y: reduce ? 0 : 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: reduce ? 0 : 0.6 }}
-          className="text-center mb-14"
-        >
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-400 mb-3">
-            Workflow automation
-          </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Automation that{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-              removes busywork
-            </span>
-          </h2>
-          <p className="max-w-2xl mx-auto text-lg text-gray-400">
-            I build n8n, Zapier, and AI-powered systems that connect tools, process data, and keep
-            business workflows moving without repetitive manual steps.
-          </p>
-        </motion.div>
+        <SectionHeading
+          title="Automation that removes busywork"
+          description="I build n8n, Zapier, and AI-powered systems that connect tools, process data, and keep business workflows moving without repetitive manual steps."
+          className="mb-14"
+        />
 
         <div className="grid gap-7 lg:grid-cols-3">
           {automations.map((automation, index) => {

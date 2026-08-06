@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ExternalLink, Github } from 'lucide-react';
 import { projects } from '@/lib/data';
 import { trackFunnel } from '@/lib/analytics';
+import SectionHeading from '@/components/SectionHeading';
 
 export default function FeaturedProject() {
   const featuredProject = projects.find((p) => 'featured' in p && p.featured) ?? projects[0];
@@ -20,19 +21,7 @@ export default function FeaturedProject() {
       className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-[var(--surface-solid)]/40 border-y border-[var(--border)]"
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <span className="text-sm font-medium text-blue-400 uppercase tracking-wider">Spotlight</span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mt-2 mb-4">
-            Featured <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Project</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full" />
-        </motion.div>
+        <SectionHeading title="Featured Project" />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}

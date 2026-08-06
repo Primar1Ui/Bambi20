@@ -69,9 +69,9 @@ Track progress phase by phase. Mark items `[x]` when shipped to `main`.
 
 | # | Task | Files | Status |
 |---|------|--------|--------|
-| 5.1 | Language switcher in navbar | `components/Navbar.tsx`, `LocaleContext` | [ ] |
-| 5.2 | Rename package to `bambi20-portfolio` | `package.json`, `package-lock.json` | [ ] |
-| 5.3 | Custom 404 with contact CTA | `app/not-found.tsx` | [ ] |
+| 5.1 | Language switcher in navbar | `components/Navbar.tsx`, `LocaleContext` | [x] |
+| 5.2 | Rename package to `bambi20-portfolio` | `package.json`, `package-lock.json` | [x] |
+| 5.3 | Custom 404 with contact CTA | `app/not-found.tsx` | [x] |
 
 **Exit criteria:** Locale toggle works; 404 is on-brand.
 
@@ -81,10 +81,10 @@ Track progress phase by phase. Mark items `[x]` when shipped to `main`.
 
 | # | Task | Files | Status |
 |---|------|--------|--------|
-| 6.1 | Simpler section headings (fewer gradients) | Section components | [ ] |
-| 6.2 | Serif body font for blog posts | `app/blog/[slug]/page.tsx`, CSS | [ ] |
-| 6.3 | Testimonials as plain quote blocks | `components/Testimonials.tsx` | [ ] |
-| 6.4 | “About the author” sidebar on blog posts | `app/blog/[slug]/page.tsx` | [ ] |
+| 6.1 | Simpler section headings (fewer gradients) | Section components | [x] |
+| 6.2 | Serif body font for blog posts | `app/blog/[slug]/page.tsx`, CSS | [x] |
+| 6.3 | Testimonials as plain quote blocks | `components/Testimonials.tsx` | [x] |
+| 6.4 | “About the author” sidebar on blog posts | `app/blog/[slug]/page.tsx` | [x] |
 
 **Exit criteria:** Site feels closer to a classic WordPress portfolio than a template.
 
@@ -96,9 +96,9 @@ Track progress phase by phase. Mark items `[x]` when shipped to `main`.
 Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 (optional)
 ```
 
-**Current focus:** Phase 5 — UX and i18n (language switcher, package rename, custom 404)
+**Current focus:** All planned phases complete (optional Phase 6 shipped)
 
-**Completed:** Phase 3 (Structured data), Phase 4 (Conversion and content)
+**Completed:** Phases 1–6 per `BAMBI20_IMPLEMENTATION_PLAN.md`
 
 ---
 

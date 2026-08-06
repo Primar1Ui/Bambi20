@@ -11,7 +11,15 @@
     "testimonials": "Testimonials",
     "hire": "Hire Me",
     "contact": "Contact",
-    "theme": "Theme"
+    "theme": "Theme",
+    "language": "Language"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or may have moved.",
+    "backHome": "Back to home",
+    "hire": "Hire me",
+    "contact": "Contact me"
   },
   "common": {
     "getInTouch": "Get in touch",

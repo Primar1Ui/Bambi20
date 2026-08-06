@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Calendar } from 'lucide-react';
 import { getLatestPost } from '@/lib/blog';
+import SectionHeading from '@/components/SectionHeading';
 
 export default function LatestBlogTeaser() {
   const post = getLatestPost();
@@ -12,17 +13,12 @@ export default function LatestBlogTeaser() {
       className="py-16 md:py-20 px-4 sm:px-6 lg:px-8 border-t border-[var(--border)]"
     >
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 id="latest-post-heading" className="text-2xl md:text-3xl font-bold mb-2">
-            From the{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-              blog
-            </span>
-          </h2>
-          <p className="text-gray-400 text-sm md:text-base">
-            Latest thoughts on building with modern web tools
-          </p>
-        </div>
+        <SectionHeading
+          id="latest-post-heading"
+          title="From the blog"
+          description="Latest thoughts on building with modern web tools"
+          className="mb-8"
+        />
 
         <article className="p-6 md:p-8 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/40 transition-colors">
           <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">

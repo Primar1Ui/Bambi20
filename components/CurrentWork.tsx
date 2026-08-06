@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Sparkles, BookOpen } from 'lucide-react';
 import { currentWork } from '@/lib/currentWork';
+import SectionHeading from '@/components/SectionHeading';
 
 export default function CurrentWork() {
   return (
@@ -11,21 +12,10 @@ export default function CurrentWork() {
       className="py-20 md:py-24 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50"
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            What I&apos;m <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Working On</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-4" />
-          <p className="text-gray-400 max-w-xl mx-auto">
-            Current projects and learning focus
-          </p>
-        </motion.div>
+        <SectionHeading
+          title="What I'm Working On"
+          description="Current projects and learning focus"
+        />
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <motion.div

@@ -11,7 +11,15 @@
     "testimonials": "Témoignages",
     "hire": "Engager",
     "contact": "Contact",
-    "theme": "Thème"
+    "theme": "Thème",
+    "language": "Langue"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "description": "La page que vous cherchez n'existe pas ou a peut-être été déplacée.",
+    "backHome": "Retour à l'accueil",
+    "hire": "Engager",
+    "contact": "Me contacter"
   },
   "common": {
     "getInTouch": "Me contacter",

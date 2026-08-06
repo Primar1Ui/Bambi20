@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { services } from '@/lib/data';
 import { CheckCircle2 } from 'lucide-react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import SectionHeading from '@/components/SectionHeading';
 
 export default function Services() {
   const reduce = usePrefersReducedMotion();
@@ -14,18 +15,7 @@ export default function Services() {
       className="py-20 md:py-32 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: reduce ? 1 : 0, y: reduce ? 0 : 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: reduce ? 0 : 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            My <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Services</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full" />
-        </motion.div>
+        <SectionHeading title="My Services" />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (

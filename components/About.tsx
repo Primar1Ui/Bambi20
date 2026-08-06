@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Code2, Zap, Rocket } from 'lucide-react';
 import { SITE_BRAND, SITE_LEGAL_NAME } from '@/lib/site';
+import SectionHeading from '@/components/SectionHeading';
 
 export default function About() {
   const features = [
@@ -29,18 +30,7 @@ export default function About() {
       className="py-20 md:py-32 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            About <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Me</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full" />
-        </motion.div>
+        <SectionHeading title="About Me" />
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div

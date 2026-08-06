@@ -4,6 +4,7 @@ import { useState, FormEvent, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Mail, Phone, Loader2, CheckCircle2, Github, MessageCircle } from 'lucide-react';
 import { trackFunnel } from '@/lib/analytics';
+import SectionHeading from '@/components/SectionHeading';
 import { whatsappContacts } from '@/lib/data';
 
 type FieldErrors = {
@@ -170,21 +171,10 @@ export default function Contact() {
         )}
       </AnimatePresence>
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Get in <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Touch</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-4" />
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Tell me about your project. I reply within 24 hours by email or WhatsApp.
-          </p>
-        </motion.div>
+        <SectionHeading
+          title="Get in Touch"
+          description="Tell me about your project. I reply within 24 hours by email or WhatsApp."
+        />
 
         <div className="grid md:grid-cols-2 gap-12">
           {/* Contact Info */}

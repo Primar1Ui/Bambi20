@@ -4,6 +4,7 @@ import CaseStudyCard from '@/components/CaseStudyCard';
 import { caseStudies } from '@/lib/caseStudies';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/page-metadata';
+import SectionHeading from '@/components/SectionHeading';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Case Studies',
@@ -17,15 +18,10 @@ export default function CaseStudiesPage() {
     <PageShell breadcrumbs={[{ label: 'Case Studies', path: '/case-studies' }]}>
       <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              Case <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Studies</span>
-            </h1>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-6" />
-            <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Project breakdowns: the problem, what I built, and the result for the client.
-            </p>
-          </div>
+          <SectionHeading
+            title="Case Studies"
+            description="Project breakdowns: the problem, what I built, and the result for the client."
+          />
 
           <div className="space-y-12">
             {caseStudies.map((caseStudy, index) => (

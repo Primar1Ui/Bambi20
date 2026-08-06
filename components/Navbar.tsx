@@ -16,6 +16,7 @@ import {
   type NavDropdown,
 } from '@/lib/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { SITE_BRAND } from '@/lib/site';
 
 function navLinkClass(isActive: boolean) {
@@ -355,6 +356,7 @@ export default function Navbar() {
 
             <div className="hidden md:flex items-center gap-1 lg:gap-2">
               {desktopNav}
+              <LanguageSwitcher />
               <ThemeToggle />
             </div>
 
@@ -398,8 +400,12 @@ export default function Navbar() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-4 py-6 space-y-1">
-                <div className="flex items-center justify-between mb-4 gap-2 pb-4 border-b border-gray-800 min-h-11">
-                  <span className="text-sm font-medium text-gray-300">{t('nav.theme')}</span>
+                <div className="flex items-center justify-between mb-4 gap-2 pb-4 border-b border-[var(--border)] min-h-11">
+                  <span className="text-sm font-medium text-[var(--muted)]">{t('nav.language')}</span>
+                  <LanguageSwitcher />
+                </div>
+                <div className="flex items-center justify-between mb-4 gap-2 pb-4 border-b border-[var(--border)] min-h-11">
+                  <span className="text-sm font-medium text-[var(--muted)]">{t('nav.theme')}</span>
                   <ThemeToggle />
                 </div>
                 {mobileNav}

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { MessageCircle, Briefcase, Search, SlidersHorizontal, ChevronDown, ExternalLink, Github } from 'lucide-react';
 import { projects, primaryWhatsApp } from '@/lib/data';
 import { trackFunnel } from '@/lib/analytics';
+import SectionHeading from '@/components/SectionHeading';
 
 const allTags = Array.from(new Set(projects.flatMap((p) => p.tech))).sort();
 const categories = Array.from(
@@ -64,25 +65,16 @@ export default function Projects() {
       className="py-20 md:py-32 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Featured <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Projects</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-4" />
+        <div className="text-center mb-8">
+          <SectionHeading title="Featured Projects" className="mb-4" />
           <Link
             href="/case-studies"
             onClick={() => trackFunnel.projectsViewCaseStudies()}
-            className="inline-flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] rounded px-2 py-1"
+            className="inline-flex items-center gap-2 text-[var(--muted)] hover:text-blue-500 transition-colors text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] rounded px-2 py-1"
           >
             View detailed case studies →
           </Link>
-        </motion.div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}

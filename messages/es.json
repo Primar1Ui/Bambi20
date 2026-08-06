@@ -11,7 +11,15 @@
     "testimonials": "Testimonios",
     "hire": "Contrátame",
     "contact": "Contacto",
-    "theme": "Tema"
+    "theme": "Tema",
+    "language": "Idioma"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o puede haber cambiado de lugar.",
+    "backHome": "Volver al inicio",
+    "hire": "Contrátame",
+    "contact": "Contáctame"
   },
   "common": {
     "getInTouch": "Contáctame",

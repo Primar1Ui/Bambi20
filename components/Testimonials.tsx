@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Quote } from 'lucide-react';
 import { testimonials, feedbackScreenshots } from '@/lib/testimonials';
+import SectionHeading from '@/components/SectionHeading';
 
 export default function Testimonials() {
   return (
@@ -11,93 +11,61 @@ export default function Testimonials() {
       id="testimonials"
       className="py-20 md:py-32 px-4 sm:px-6 lg:px-8"
     >
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Client <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Testimonials</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-4" />
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Verified feedback from recent client engagements
-          </p>
-        </motion.div>
+      <div className="max-w-4xl mx-auto">
+        <SectionHeading
+          title="Client Testimonials"
+          description="Verified feedback from recent client engagements"
+        />
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="space-y-8 mb-16">
           {testimonials.map((testimonial, index) => (
-            <motion.div
+            <motion.figure
               key={testimonial.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.4 }}
-              className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/50 transition-all duration-300"
+              transition={{ delay: index * 0.05, duration: 0.35 }}
+              className="border-l-4 border-[var(--border)] pl-5 md:pl-6"
             >
-              <div className="flex items-start gap-4 mb-4">
-                {(testimonial.image || testimonial.logo) ? (
-                  <div className="relative w-14 h-14 rounded-full overflow-hidden bg-gray-800 flex-shrink-0 ring-2 ring-blue-500/30">
-                    <Image
-                      src={testimonial.image ?? testimonial.logo ?? ''}
-                      alt={testimonial.logo ? `${testimonial.company ?? 'Company'} logo` : testimonial.name}
-                      fill
-                      className="object-cover"
-                      sizes="56px"
-                    />
-                  </div>
-                ) : (
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex-shrink-0">
-                    <Quote className="w-5 h-5 text-blue-400" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-gray-300 leading-relaxed italic mb-4">
-                    &quot;{testimonial.quote}&quot;
-                  </p>
-                  <div className="border-t border-gray-800 pt-4">
-                    <p className="text-white font-semibold">{testimonial.name}</p>
-                    {testimonial.role && (
-                      <p className="text-gray-400 text-sm">{testimonial.role}</p>
-                    )}
-                    {testimonial.company && (
-                      <p className="text-gray-400 text-sm">{testimonial.company}</p>
-                    )}
-                    {testimonial.project && (
-                      <p className="text-blue-400 text-sm mt-1">Project: {testimonial.project}</p>
-                    )}
-                  </div>
+              <blockquote className="text-[var(--foreground)] leading-relaxed text-lg mb-4">
+                &ldquo;{testimonial.quote}&rdquo;
+              </blockquote>
+              <figcaption className="text-sm text-[var(--muted)] space-y-0.5">
+                <p className="font-semibold text-[var(--foreground)]">{testimonial.name}</p>
+                {testimonial.role ? <p>{testimonial.role}</p> : null}
+                {testimonial.company ? <p>{testimonial.company}</p> : null}
+                {testimonial.project ? <p>Project: {testimonial.project}</p> : null}
+              </figcaption>
+              {(testimonial.image || testimonial.logo) && (
+                <div className="relative w-12 h-12 rounded-full overflow-hidden mt-4 bg-[var(--surface)]">
+                  <Image
+                    src={testimonial.image ?? testimonial.logo ?? ''}
+                    alt={testimonial.logo ? `${testimonial.company ?? 'Company'} logo` : testimonial.name}
+                    fill
+                    className="object-cover"
+                    sizes="48px"
+                  />
                 </div>
-              </div>
-            </motion.div>
+              )}
+            </motion.figure>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mt-16"
-        >
-          <h3 className="text-xl md:text-2xl font-semibold text-white text-center mb-2">
-            Verified platform feedback
-          </h3>
-          <p className="text-sm text-gray-500 text-center mb-8">
-            Screenshots from published client reviews on Fiverr
-          </p>
-          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div>
+          <SectionHeading
+            title="Verified platform feedback"
+            description="Screenshots from published client reviews on Fiverr"
+            className="mb-8"
+          />
+          <div className="grid md:grid-cols-2 gap-6">
             {feedbackScreenshots.map((shot, index) => (
               <motion.figure
                 key={shot.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.08, duration: 0.4 }}
-                className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-900/50 hover:border-cyan-500/40 transition-colors"
+                transition={{ delay: index * 0.05, duration: 0.35 }}
+                className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]"
               >
                 <div className="relative aspect-[4/3] bg-white">
                   <Image
@@ -108,15 +76,15 @@ export default function Testimonials() {
                     className="object-contain object-top p-2"
                   />
                 </div>
-                <figcaption className="px-4 py-3 border-t border-gray-800 text-sm text-gray-400">
-                  <span className="text-cyan-400 font-medium">{shot.client}</span>
-                  <span className="text-gray-600"> · </span>
+                <figcaption className="px-4 py-3 border-t border-[var(--border)] text-sm text-[var(--muted)]">
+                  <span className="font-medium text-[var(--foreground)]">{shot.client}</span>
+                  <span aria-hidden> · </span>
                   {shot.caption}
                 </figcaption>
               </motion.figure>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
