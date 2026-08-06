@@ -19,6 +19,14 @@ export interface Testimonial {
  */
 export const testimonials: Testimonial[] = [
   {
+    id: 'testimonial-camjroberts',
+    name: 'CamJRoberts',
+    project: 'Email & Automation Setup',
+    quote:
+      'David is an amazing freelancer. When it comes to setting up mailboxes for your inbound, outbound, and automated emails - he is the guy you want to hire. Very professional. Very helpful. Polite and listens to your concerns. HIGHLY RECOMMENDED',
+    role: 'Client',
+  },
+  {
     id: 'testimonial-1',
     name: 'Founder',
     company: 'Early-stage SaaS',

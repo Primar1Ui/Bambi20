@@ -28,7 +28,7 @@ export default function Testimonials() {
           </p>
           {testimonials.some((t) => t.illustrative) && (
             <p className="text-sm text-gray-500 mt-3">
-              Sample anonymized quotes — replace with published client testimonials when available.
+              Some quotes are anonymized samples; published client testimonials are included where available.
             </p>
           )}
         </motion.div>
