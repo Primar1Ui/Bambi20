@@ -39,6 +39,7 @@ export const testimonials: Testimonial[] = [
     id: 'testimonial-morgan',
     name: 'Morgan',
     company: 'morgangao1999 · Fiverr',
+    project: 'Email Leads and Enrichment',
     quote: "The processing speed is very fast — it's great.",
     role: 'Client',
   },
