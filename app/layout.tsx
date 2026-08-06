@@ -5,13 +5,13 @@ import { LocaleProvider } from '@/contexts/LocaleContext';
 import KeyboardShortcuts from '@/components/KeyboardShortcuts';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import PWARegister from '@/components/PWARegister';
+import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_NAME } from '@/lib/site';
 import "./globals.css";
 import "./print.css";
 
 export const metadata: Metadata = {
-  title: "David | Full-Stack & AI Web Developer",
-  description:
-    "David is a full-stack developer specializing in modern web apps, AI integrations, Supabase backends, and SaaS MVP development.",
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   keywords: [
     "Full-Stack Developer",
     "AI Web Apps",
@@ -26,11 +26,10 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://david-portfolio.vercel.app",
-    title: "David | Full-Stack & AI Web Developer",
-    description:
-      "David is a full-stack developer specializing in modern web apps, AI integrations, Supabase backends, and SaaS MVP development.",
-    siteName: "David Portfolio",
+    url: SITE_URL,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
     images: [
       {
         url: "/images/og-image.png",
@@ -42,9 +41,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "David | Full-Stack & AI Web Developer",
-    description:
-      "David is a full-stack developer specializing in modern web apps, AI integrations, Supabase backends, and SaaS MVP development.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     images: ["/images/og-image.png"],
   },
   robots: {
@@ -68,7 +66,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  metadataBase: new URL("https://mymainportfolio-one.vercel.app"),
+  metadataBase: new URL(SITE_URL),
 };
 
 export default function RootLayout({
@@ -84,7 +82,7 @@ export default function RootLayout({
             __html: `(function(){try{var s=localStorage.getItem('theme');var t=(s==='light'||s==='dark')?s:'dark';document.documentElement.classList.add(t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='light'?'#0b1628':'#070f1c');}catch(e){document.documentElement.classList.add('dark');}})();`,
           }}
         />
-        <link rel="canonical" href="https://mymainportfolio-one.vercel.app" />
+        <link rel="canonical" href={SITE_URL} />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -93,8 +91,8 @@ export default function RootLayout({
         <link
           rel="alternate"
           type="application/rss+xml"
-          title="bambi20 Blog RSS"
-          href="https://mymainportfolio-one.vercel.app/feed"
+          title="David's Blog RSS"
+          href={`${SITE_URL}/feed`}
         />
         <meta name="theme-color" content="#070f1c" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -120,7 +118,7 @@ export default function RootLayout({
               "@type": "Person",
               name: "David",
               jobTitle: "Full-Stack & AI Web Developer",
-              url: "https://david-portfolio.vercel.app",
+              url: SITE_URL,
               email: "mailto:davidtosin306@gmail.com",
               sameAs: [
                 "https://github.com/Primar1Ui",
@@ -148,7 +146,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "David Portfolio",
-              url: "https://david-portfolio.vercel.app",
+              url: SITE_URL,
               description:
                 "David is a full-stack developer specializing in modern web apps, AI integrations, Supabase backends, and SaaS MVP development.",
               author: {

@@ -6,6 +6,39 @@ import { Send, Mail, Phone, Loader2, CheckCircle2 } from 'lucide-react';
 import { trackFunnel } from '@/lib/analytics';
 import { whatsappContacts } from '@/lib/data';
 
+type FieldErrors = {
+  name?: string;
+  email?: string;
+  message?: string;
+};
+
+function validateContactForm(data: { name: string; email: string; message: string }): FieldErrors {
+  const errors: FieldErrors = {};
+  const name = data.name.trim();
+  const email = data.email.trim();
+  const message = data.message.trim();
+
+  if (!name) {
+    errors.name = 'Please enter your name.';
+  } else if (name.length < 2) {
+    errors.name = 'Name must be at least 2 characters.';
+  }
+
+  if (!email) {
+    errors.email = 'Please enter your email address.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.email = 'Please enter a valid email address.';
+  }
+
+  if (!message) {
+    errors.message = 'Please enter a message.';
+  } else if (message.length < 10) {
+    errors.message = 'Message must be at least 10 characters.';
+  }
+
+  return errors;
+}
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -16,6 +49,7 @@ export default function Contact() {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [statusMessage, setStatusMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
   useEffect(() => {
@@ -28,6 +62,15 @@ export default function Contact() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     trackFunnel.contactFormSubmit();
+
+    const errors = validateContactForm(formData);
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setStatus('error');
+      setStatusMessage('Please fix the errors below before sending.');
+      return;
+    }
+
     setIsLoading(true);
     setStatus('idle');
     setStatusMessage('');
@@ -47,6 +90,7 @@ export default function Contact() {
         trackFunnel.contactFormSuccess();
         setStatus('success');
         setStatusMessage('Message sent successfully! I\'ll get back to you soon.');
+        setFieldErrors({});
         setFormData({ name: '', email: '', message: '', website: '' });
       } else {
         trackFunnel.contactFormError(data.errorType || 'unknown');
@@ -202,7 +246,7 @@ export default function Contact() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6 relative">
+            <form onSubmit={handleSubmit} className="space-y-6 relative" noValidate>
               {/* Honeypot field - hidden from users */}
               <div className="absolute opacity-0 pointer-events-none h-0 overflow-hidden" aria-hidden="true">
                 <label htmlFor="website">Website</label>
@@ -225,10 +269,26 @@ export default function Contact() {
                   id="name"
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-900/50 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] transition-colors"
+                  onChange={(e) => {
+                    setFormData({ ...formData, name: e.target.value });
+                    if (fieldErrors.name) {
+                      setFieldErrors((prev) => ({ ...prev, name: undefined }));
+                    }
+                  }}
+                  aria-invalid={Boolean(fieldErrors.name)}
+                  aria-describedby={fieldErrors.name ? 'name-error' : undefined}
+                  className={`w-full px-4 py-3 rounded-xl bg-gray-900/50 border text-white placeholder-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] transition-colors ${
+                    fieldErrors.name
+                      ? 'border-red-500/70 focus:border-red-500'
+                      : 'border-gray-800 focus:border-blue-500'
+                  }`}
                   placeholder="Your name"
                 />
+                {fieldErrors.name && (
+                  <p id="name-error" role="alert" className="mt-2 text-sm text-red-400">
+                    {fieldErrors.name}
+                  </p>
+                )}
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
@@ -239,10 +299,26 @@ export default function Contact() {
                   id="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-900/50 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] transition-colors"
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    if (fieldErrors.email) {
+                      setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                    }
+                  }}
+                  aria-invalid={Boolean(fieldErrors.email)}
+                  aria-describedby={fieldErrors.email ? 'email-error' : undefined}
+                  className={`w-full px-4 py-3 rounded-xl bg-gray-900/50 border text-white placeholder-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] transition-colors ${
+                    fieldErrors.email
+                      ? 'border-red-500/70 focus:border-red-500'
+                      : 'border-gray-800 focus:border-blue-500'
+                  }`}
                   placeholder="your.email@example.com"
                 />
+                {fieldErrors.email && (
+                  <p id="email-error" role="alert" className="mt-2 text-sm text-red-400">
+                    {fieldErrors.email}
+                  </p>
+                )}
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
@@ -253,10 +329,26 @@ export default function Contact() {
                   required
                   rows={6}
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-900/50 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] transition-colors resize-none"
+                  onChange={(e) => {
+                    setFormData({ ...formData, message: e.target.value });
+                    if (fieldErrors.message) {
+                      setFieldErrors((prev) => ({ ...prev, message: undefined }));
+                    }
+                  }}
+                  aria-invalid={Boolean(fieldErrors.message)}
+                  aria-describedby={fieldErrors.message ? 'message-error' : undefined}
+                  className={`w-full px-4 py-3 rounded-xl bg-gray-900/50 border text-white placeholder-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19] transition-colors resize-none ${
+                    fieldErrors.message
+                      ? 'border-red-500/70 focus:border-red-500'
+                      : 'border-gray-800 focus:border-blue-500'
+                  }`}
                   placeholder="Your message..."
                 />
+                {fieldErrors.message && (
+                  <p id="message-error" role="alert" className="mt-2 text-sm text-red-400">
+                    {fieldErrors.message}
+                  </p>
+                )}
               </div>
               {statusMessage && (
                 <div

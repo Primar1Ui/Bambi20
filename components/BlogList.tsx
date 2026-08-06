@@ -28,7 +28,8 @@ export default function BlogList({ posts }: BlogListProps) {
         <button
           type="button"
           onClick={() => setActiveTag('all')}
-          className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+          aria-pressed={activeTag === 'all'}
+          className={`px-3 py-1.5 min-h-11 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
             activeTag === 'all'
               ? 'bg-blue-500/30 text-blue-300 border border-blue-500/50'
               : 'bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-200'
@@ -41,7 +42,8 @@ export default function BlogList({ posts }: BlogListProps) {
             key={tag}
             type="button"
             onClick={() => setActiveTag(tag)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+            aria-pressed={activeTag === tag}
+            className={`px-3 py-1.5 min-h-11 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
               activeTag === tag
                 ? 'bg-blue-500/30 text-blue-300 border border-blue-500/50'
                 : 'bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-200'

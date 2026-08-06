@@ -1,27 +1,26 @@
 import { NextResponse } from 'next/server';
 import { blogPosts } from '@/lib/blog';
-
-const baseUrl = 'https://david-portfolio.vercel.app';
+import { SITE_URL } from '@/lib/site';
 
 export async function GET() {
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>David's Blog</title>
-    <link>${baseUrl}/blog</link>
+    <link>${SITE_URL}/blog</link>
     <description>Technical articles, tutorials, and thoughts on web development, Next.js, Supabase, and SaaS.</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${baseUrl}/feed" rel="self" type="application/rss+xml" />
+    <atom:link href="${SITE_URL}/feed" rel="self" type="application/rss+xml" />
     ${blogPosts
       .map(
         (post) => `
     <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${baseUrl}/blog/${post.slug}</link>
+      <link>${SITE_URL}/blog/${post.slug}</link>
       <description>${escapeXml(post.description)}</description>
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
-      <guid isPermaLink="true">${baseUrl}/blog/${post.slug}</guid>
+      <guid isPermaLink="true">${SITE_URL}/blog/${post.slug}</guid>
     </item>`
       )
       .join('')}

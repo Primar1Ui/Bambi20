@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { blogPosts, getPostBySlug } from '@/lib/blog';
+import { SITE_URL } from '@/lib/site';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: post.title,
       description: post.description,
-      url: `https://david-portfolio.vercel.app/blog/${post.slug}`,
+      url: `${SITE_URL}/blog/${post.slug}`,
       type: 'article',
       publishedTime: post.date,
       authors: [post.author],
@@ -117,7 +118,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   if (!post) notFound();
 
   return (
-    <main className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+    <main id="main-content" className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8" tabIndex={-1}>
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -131,10 +132,10 @@ export default async function BlogPostPage({ params }: PageProps) {
             author: {
               '@type': 'Person',
               name: post.author,
-              url: 'https://david-portfolio.vercel.app',
+              url: SITE_URL,
             },
-            mainEntityOfPage: `https://david-portfolio.vercel.app/blog/${post.slug}`,
-            image: 'https://david-portfolio.vercel.app/images/og-image.png',
+            mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+            image: `${SITE_URL}/images/og-image.png`,
             keywords: post.tags.join(', '),
           }),
         }}

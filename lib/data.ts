@@ -103,7 +103,6 @@ export const projects = [
     description: "Premium men's accessories e-commerce site with clean UI and smooth experience.",
     tech: ["Next.js", "Tailwind CSS"],
     category: "frontend",
-    github: "#", // Add repo URL when available
     live: "https://refined-man.vercel.app/",
     role: "Frontend developer",
     results: "Designed and built a polished men's accessories storefront.",

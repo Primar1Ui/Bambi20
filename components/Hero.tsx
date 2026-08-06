@@ -3,16 +3,17 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Rocket, Mail, MessageCircle, ArrowRight, Download } from 'lucide-react';
+import Link from 'next/link';
+import { Rocket, MessageCircle, ArrowRight, Mail } from 'lucide-react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { trackFunnel } from '@/lib/analytics';
 import { portfolioStats, primaryWhatsApp } from '@/lib/data';
 
 const TEXTS = [
-  "Full-Stack Developer",
-  "Embedded System Analyst",
-  "Community Builder",
-  "SaaS Builder"
+  'Full-Stack Developer',
+  'Next.js Developer',
+  'Supabase & SaaS Builder',
+  'Automation Specialist',
 ];
 
 export default function Hero() {
@@ -71,10 +72,6 @@ export default function Hero() {
 
   const handleViewProjects = () => {
     trackFunnel.heroViewProjects();
-    const element = document.querySelector('#projects');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   return (
@@ -95,7 +92,7 @@ export default function Hero() {
             <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-cyan-400/50 overflow-hidden shadow-2xl shadow-cyan-500/20">
               {!imageError ? (
                 <Image
-                  src="/images/profile.jpg"
+                  src="/images/profile.svg"
                   alt="David - Full-Stack Developer"
                   width={256}
                   height={256}
@@ -143,8 +140,17 @@ export default function Hero() {
           className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-8 min-h-[3rem]"
         >
           <span className="text-gray-300">I'm a </span>
-          <span className="text-cyan-400">{displayedText}</span>
-          <span className={`text-cyan-400 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>
+          <span
+            className="text-cyan-400"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {displayedText}
+          </span>
+          <span
+            className={`text-cyan-400 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
+            aria-hidden="true"
+          >
             |
           </span>
         </motion.div>
@@ -170,14 +176,15 @@ export default function Hero() {
           transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <button
+          <Link
+            href="/projects"
             onClick={handleViewProjects}
             className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-xl font-semibold text-black hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
           >
             <Rocket className="w-5 h-5" />
             <span>View My Projects</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
           <a
             href={primaryWhatsApp.href}
             target="_blank"
@@ -187,15 +194,6 @@ export default function Hero() {
           >
             <MessageCircle className="w-5 h-5" />
             <span>Chat on WhatsApp</span>
-          </a>
-          <a
-            href="/cv.pdf"
-            download
-            onClick={() => trackFunnel.heroDownloadCV()}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-800 border-2 border-gray-700 rounded-xl font-semibold text-white hover:bg-gray-700 hover:border-gray-600 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F19]"
-          >
-            <Download className="w-5 h-5" />
-            <span>Download CV</span>
           </a>
         </motion.div>
 

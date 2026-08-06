@@ -51,24 +51,33 @@ export default function Skills() {
                 {category.title}
               </h3>
               <div className="space-y-4">
-                {category.skills.map((skill, skillIndex) => (
-                  <div key={typeof skill === 'string' ? skill : skill.name} className="space-y-1.5">
+                {category.skills.map((skill, skillIndex) => {
+                  const skillName = typeof skill === 'string' ? skill : skill.name;
+                  const skillLevel =
+                    typeof skill === 'object' && 'level' in skill ? skill.level : 100;
+
+                  return (
+                  <div key={skillName} className="space-y-1.5">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-300 font-medium">
-                        {typeof skill === 'string' ? skill : skill.name}
+                      <span className="text-gray-300 font-medium" id={`skill-label-${category.title}-${skillIndex}`}>
+                        {skillName}
                       </span>
                       {typeof skill === 'object' && 'level' in skill && (
-                        <span className="text-gray-500">{skill.level}%</span>
+                        <span className="text-gray-500" aria-hidden="true">{skill.level}%</span>
                       )}
                     </div>
-                    <div className="h-2 rounded-full bg-gray-800 overflow-hidden">
+                    <div
+                      role="progressbar"
+                      aria-valuenow={skillLevel}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-labelledby={`skill-label-${category.title}-${skillIndex}`}
+                      className="h-2 rounded-full bg-gray-800 overflow-hidden"
+                    >
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{
-                          width:
-                            typeof skill === 'object' && 'level' in skill
-                              ? `${skill.level}%`
-                              : '100%',
+                          width: `${skillLevel}%`,
                         }}
                         viewport={{ once: true }}
                         transition={{
@@ -79,7 +88,8 @@ export default function Skills() {
                       />
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           ))}

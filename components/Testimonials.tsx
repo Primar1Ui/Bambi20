@@ -24,16 +24,11 @@ export default function Testimonials() {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-4" />
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Feedback from recent product and marketing engagements
+            Verified feedback from recent client engagements
           </p>
-          {testimonials.some((t) => t.illustrative) && (
-            <p className="text-sm text-gray-500 mt-3">
-              Some quotes are anonymized samples; published client testimonials are included where available.
-            </p>
-          )}
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.id}

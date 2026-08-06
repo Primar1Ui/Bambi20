@@ -4,7 +4,8 @@
   nav,
   footer,
   .skip-to-content,
-  button[aria-label="Toggle menu"],
+  button[aria-label="Open menu"],
+  button[aria-label="Close menu"],
   .no-print {
     display: none !important;
   }
@@ -22,7 +23,7 @@
   }
 
   /* Links: show URL after text */
-  a[href^="http"]:not([href*="david-portfolio"]):after {
+  a[href^="http"]:not([href*="mymainportfolio-one.vercel.app"]):after {
     content: " (" attr(href) ")";
     font-size: 0.85em;
     color: #666;

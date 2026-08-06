@@ -55,7 +55,7 @@ export default function Newsletter() {
         <p className="text-gray-400 mb-6">
           {NEWSLETTER_ENABLED
             ? 'Get occasional updates on new posts and projects. No spam.'
-            : 'Newsletter signup activates once Supabase is configured. Meanwhile, reach out via the contact form.'}
+            : 'Newsletter coming soon — for now, say hello via the contact form or WhatsApp. I reply within 24 hours.'}
         </p>
         {NEWSLETTER_ENABLED ? (
           <>
@@ -111,7 +111,7 @@ export default function Newsletter() {
           </>
         ) : (
           <a
-            href="#contact"
+            href="/contact"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-background"
           >
             Contact me instead

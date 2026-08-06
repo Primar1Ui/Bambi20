@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { blogPosts } from '@/lib/blog';
 import BlogList from '@/components/BlogList';
+import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Blog | David — Full-Stack & AI Web Developer',
@@ -11,14 +12,14 @@ export const metadata: Metadata = {
     title: 'Blog | David — Full-Stack & AI Web Developer',
     description:
       'Technical articles, tutorials, and thoughts on Next.js, Supabase, SaaS, automation, and web development.',
-    url: 'https://david-portfolio.vercel.app/blog',
+    url: `${SITE_URL}/blog`,
     images: [{ url: '/images/og-image.png', width: 1200, height: 630 }],
   },
 };
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+    <main id="main-content" className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8" tabIndex={-1}>
       <div className="max-w-4xl mx-auto">
         <div className="mb-12">
           <Link

@@ -194,7 +194,7 @@ export default function AutomationShowcase() {
 
         <div className="text-center mt-10">
           <a
-            href="#contact"
+            href="/contact"
             className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Discuss an automation project
