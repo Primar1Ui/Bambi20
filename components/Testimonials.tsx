@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Quote } from 'lucide-react';
-import { testimonials } from '@/lib/testimonials';
+import { testimonials, feedbackScreenshots } from '@/lib/testimonials';
 
 export default function Testimonials() {
   return (
@@ -80,6 +80,48 @@ export default function Testimonials() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-16"
+        >
+          <h3 className="text-xl md:text-2xl font-semibold text-white text-center mb-2">
+            Verified platform feedback
+          </h3>
+          <p className="text-sm text-gray-500 text-center mb-8">
+            Screenshots from published client reviews on Fiverr
+          </p>
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {feedbackScreenshots.map((shot, index) => (
+              <motion.figure
+                key={shot.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08, duration: 0.4 }}
+                className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-900/50 hover:border-cyan-500/40 transition-colors"
+              >
+                <div className="relative aspect-[4/3] bg-white">
+                  <Image
+                    src={shot.image}
+                    alt={shot.alt}
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-contain object-top p-2"
+                  />
+                </div>
+                <figcaption className="px-4 py-3 border-t border-gray-800 text-sm text-gray-400">
+                  <span className="text-cyan-400 font-medium">{shot.client}</span>
+                  <span className="text-gray-600"> · </span>
+                  {shot.caption}
+                </figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
