@@ -1,9 +1,25 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import { homeFaqs } from '@/lib/seo';
 
 export default function HomeFaq() {
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set());
+
+  const toggleItem = (index: number) => {
+    setOpenItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
   return (
     <section
       aria-labelledby="faq-heading"
@@ -26,20 +42,51 @@ export default function HomeFaq() {
           </p>
         </motion.div>
 
-        <dl className="space-y-4">
-          {homeFaqs.map((item, index) => (
-            <motion.div
-              key={item.question}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.04 }}
-              className="p-5 sm:p-6 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]"
-            >
-              <dt className="text-base font-semibold text-[var(--foreground)] mb-2">{item.question}</dt>
-              <dd className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">{item.answer}</dd>
-            </motion.div>
-          ))}
+        <dl className="space-y-3">
+          {homeFaqs.map((item, index) => {
+            const isOpen = openItems.has(index);
+            const panelId = `faq-panel-${index}`;
+            const buttonId = `faq-button-${index}`;
+
+            return (
+              <motion.div
+                key={item.question}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.04 }}
+                className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] overflow-hidden"
+              >
+                <dt>
+                  <button
+                    id={buttonId}
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    onClick={() => toggleItem(index)}
+                    className="flex w-full items-center justify-between gap-4 min-h-14 px-5 py-4 text-left text-base font-semibold text-[var(--foreground)] hover:bg-[var(--surface)]/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+                  >
+                    <span>{item.question}</span>
+                    <ChevronDown
+                      className={`w-5 h-5 shrink-0 text-[var(--muted)] transition-transform duration-200 ${
+                        isOpen ? 'rotate-180' : ''
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                </dt>
+                <dd
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={buttonId}
+                  hidden={!isOpen}
+                  className="px-5 pb-5 text-sm sm:text-base text-[var(--muted)] leading-relaxed border-t border-[var(--border)]"
+                >
+                  <p className="pt-4">{item.answer}</p>
+                </dd>
+              </motion.div>
+            );
+          })}
         </dl>
       </div>
     </section>

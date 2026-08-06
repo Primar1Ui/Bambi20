@@ -7,6 +7,7 @@ export const SITE_NAME = 'Bambi20 Portfolio';
 export const SITE_TITLE = 'Bambi20 | Full Stack Web Developer & Automation';
 export const SITE_TAGLINE = 'Full stack web apps, AI integrations, and workflow automation.';
 export const SITE_HERO_TAGLINE = 'Full stack  |  AI web apps  |  Automation';
+export const SITE_HERO_HEADLINE = 'Full stack products that launch fast and run in production';
 export const SITE_DESCRIPTION =
   'Oluwatosin David (Bambi20) builds modern web apps, Supabase backends, AI integrations, and n8n or Zapier automations for founders and small teams.';
 

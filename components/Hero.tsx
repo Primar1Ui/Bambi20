@@ -10,6 +10,7 @@ import {
   SITE_BRAND,
   SITE_LEGAL_NAME,
   SITE_HERO_TAGLINE,
+  SITE_HERO_HEADLINE,
 } from '@/lib/site';
 
 const TECH_STACK = 'Next.js · Supabase · React · n8n · Zapier';
@@ -37,7 +38,7 @@ export default function Hero() {
             </p>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold tracking-tight text-[var(--foreground)] leading-[1.1] mb-6">
-              I build apps that ship to production
+              {SITE_HERO_HEADLINE}
             </h1>
 
             <p className="text-base sm:text-lg text-[var(--muted)] leading-relaxed max-w-xl mb-8">
